@@ -1,0 +1,33 @@
+function SideBar() {
+  return (
+    <main className="h-full w-[50%] shadow-lg rounded-none top-0 left-0 bg-[#111827] outline-1 outline-[#d1d5db] p-5">
+      {/* Close Button */}
+      <div className="CloseButton flex justify-end mb-3">
+        <button className="text-gray-400 border-2 border-white  outline-2 outline-gray-500 rounded-md w-5 h-5 p-3 flex items-center justify-center transition-all duration-300 hover:text-white hover:border-gray-300 hover:outline-gray-300">
+          X
+        </button>
+      </div>
+
+      {/* Sidebar Links */}
+      <div className="Links grid gap-5 ml-5">
+        <a href="https://github.com/AWERDdev" className="text-lg text-blue-500 font-extrabold hover:no-underline">
+          Home
+        </a>
+        <a href="https://github.com/AWERDdev" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
+          AWERDdev
+        </a>
+        <a href="https://github.com/AWERDdev/AUTOCOMP_JSVersion" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
+          AppRepo
+        </a>
+        <a href="https://github.com/AWERDdev" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
+          Login
+        </a>
+        <a href="https://github.com/AWERDdev/AUTOCOMP_JSVersion" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
+          Sign Up
+        </a>
+      </div>
+    </main>
+  );
+}
+
+export default SideBar;
