@@ -5,6 +5,7 @@ import SideBar from "./Components/SideBar";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+
   // Function to Open Sidebar
   const OpenSidebar = () => {
     setIsOpen(true); // Always open the sidebar
