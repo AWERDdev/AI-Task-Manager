@@ -1,9 +1,8 @@
 import { useState } from "react";
-import "./App.css";
-import NoAuthNav from "./Components/NoAuthNav";
-import NoAuthSideBar from "./Components/NoAuthSideBar";
+import NavBar from "../Components/NavBar";
+import SideBar from "../Components/SideBar";
 
-function App() {
+function Intro() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Function to Open Sidebar
@@ -19,7 +18,7 @@ function App() {
   return (
     <main className="relative">
       <header>
-        <NoAuthNav OpenSidebar={OpenSidebar} />
+        <NavBar OpenSidebar={OpenSidebar} />
       </header>
 
       {/* Background Overlay - Shows when sidebar is open */}
@@ -36,7 +35,7 @@ function App() {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <NoAuthSideBar CloseSidebar={CloseSidebar} />
+        <SideBar CloseSidebar={CloseSidebar} />
       </section>
 
       <section className="SectionOne"></section>
@@ -46,4 +45,4 @@ function App() {
   );
 }
 
-export default App;
+export default Intro;

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-function SideBar({CloseSidebar}) {
+function NoAuthSideBar({CloseSidebar}) {
   return (
     <main className="h-full w-[70%] shadow-lg rounded-none top-0 left-0 bg-[#111827] outline-1 outline-[#d1d5db] p-5">
       {/* Close Button */}
@@ -11,14 +11,8 @@ function SideBar({CloseSidebar}) {
 
       {/* Sidebar Links */}
       <div className="Links grid gap-5 ml-5">
-        <a href="/Intro" className="text-lg text-blue-500 font-extrabold hover:no-underline">
+        <a href="/" className="text-lg text-blue-500 font-extrabold hover:no-underline">
           Home
-        </a>
-        <a href="/Login" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
-          Login
-        </a>
-        <a href="/Signup" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
-          Sign Up
         </a>
         <a href="https://github.com/AWERDdev" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
           AWERDdev
@@ -30,7 +24,7 @@ function SideBar({CloseSidebar}) {
     </main>
   );
 }
-SideBar.propTypes = {
+NoAuthSideBar.propTypes = {
   CloseSidebar: PropTypes.func.isRequired,
 };
-export default SideBar;
+export default NoAuthSideBar;
