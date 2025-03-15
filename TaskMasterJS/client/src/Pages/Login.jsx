@@ -1,11 +1,47 @@
 import { useState } from "react";
 import NavBarNoOutline from "../Components/NavBarNoOutline";
 import SideBar from "../Components/SideBar";
-
+import { useNavigate } from "react-router-dom";
 function Login() {
   const [isOpen, setIsOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+
   const OpenSidebar = () => setIsOpen(true);
   const CloseSidebar = () => setIsOpen(false);
+  const navigate = useNavigate(); // Initialize navigate function
+
+  const Signup = ()=>{
+    navigate("/"); // Navigate to the Signup page
+  }
+
+  const validateForm = () => {
+    let newErrors = {};
+    
+    if (!email) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Invalid email format";
+    }
+    
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      console.log("Form submitted", { email, password });
+      Signup()
+    }
+  };
 
   return (
     <>
@@ -42,36 +78,45 @@ function Login() {
             </div>
 
             {/* Input Fields */}
-            <div className="grid gap-5 w-full">
+            <form onSubmit={handleSubmit} className="grid gap-5 w-full">
               {/* Email Input */}
-              <label htmlFor="EmailInput" className="text-white text-[1rem]">Email Address</label>
-              <input
-                type="email"
-                id="EmailInput"
-                placeholder="john@example.com"
-                className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
-              />
+              <div>
+                <label htmlFor="EmailInput" className="text-white text-[1rem]">Email Address</label>
+                <input
+                  type="email"
+                  id="EmailInput"
+                  placeholder="john@example.com"
+                  className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+              </div>
 
               {/* Password Input */}
-              <label htmlFor="PasswordInput" className="text-white text-[1rem]">Password</label>
-              <input
-                type="password"
-                id="PasswordInput"
-                placeholder="●●●●●●●●"
-                className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+              <div>
+                <label htmlFor="PasswordInput" className="text-white text-[1rem]">Password</label>
+                <input
+                  type="password"
+                  id="PasswordInput"
+                  placeholder="●●●●●●●●"
+                  className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+              </div>
 
-            {/* Buttons */}
-            <div className="mt-6">
-              <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
-                Login
-              </button>
-              <p className="text-center mt-4 text-gray-600">
-                Don’t have an account?{" "}
-                <a href="/Signup" className="text-blue-500">Sign up</a>
-              </p>
-            </div>
+              {/* Submit Button */}
+              <div className="mt-6">
+                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                  Login
+                </button>
+                <p className="text-center mt-4 text-gray-600">
+                  Don’t have an account? <a href="/Signup" className="text-blue-500">Sign up</a>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </main>
@@ -80,3 +125,4 @@ function Login() {
 }
 
 export default Login;
+
