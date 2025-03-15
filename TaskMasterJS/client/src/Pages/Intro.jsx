@@ -4,7 +4,7 @@ import SideBar from "../Components/SideBar";
 import { ArrowRight } from 'lucide-react';
 import Cards from "../Components/Cards";
 import { ListChecks, Clock, CheckCircle } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 function Intro() {
   const [isOpen, setIsOpen] = useState(false);
   const Icon1 = <ListChecks />;
@@ -14,9 +14,17 @@ function Intro() {
   const OpenSidebar = () => setIsOpen(true);
   const CloseSidebar = () => setIsOpen(false);
 
+  const navigate = useNavigate(); // Initialize navigate function
+  const LoginPath = ()=>{
+    navigate("/Login"); // Navigate to the Signup page
+  }
+  const Signup = ()=>{
+    navigate("/Signup"); // Navigate to the Signup page
+  }
+
   return (
-    <main className="relative bg-[#111827] w-screen h-screen">
-      <header>
+    <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden">
+      <header >
         <NavBar OpenSidebar={OpenSidebar} />
       </header>
 
@@ -43,10 +51,10 @@ function Intro() {
           The simple, efficient way to manage your daily tasks, projects, and goals all in one place.
         </p>
         <div className="flex justify-center gap-5 flex-wrap">
-          <button className="flex items-center justify-center gap-2 text-[1rem] text-black font-bold px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
+          <button onClick={Signup} className="flex items-center justify-center gap-2 text-[1rem] text-black  px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
             Get Started <ArrowRight />
           </button>
-          <button className="text-[1rem] text-white hover:text-black font-bold px-6 py-3 min-w-[100px] max-w-[150px] border border-white rounded-md hover:bg-gray-500 transition-all duration-300">
+          <button onClick={LoginPath} className="text-[1rem] text-white hover:text-black  px-6 py-3 min-w-[100px] max-w-[150px] border border-white rounded-md hover:bg-gray-500 transition-all duration-300">
             Login
           </button>
         </div>
@@ -75,6 +83,30 @@ function Intro() {
             Icon={Icon3}
           />
         </div>
+      </section>
+      <section className="bg-[#111827] mt-5 p-10">
+        <div className="Title">
+          <h1 className="text-white text-center text-[1rem] md:text-[3rem] font-extrabold">Ready to get organized?</h1>
+          <p className="text-white text-center text-[1rem]  mb-4">
+          Join thousands of users who have transformed their productivity with TaskMaster.
+        </p>
+        </div>
+        <div className="flex justify-center gap-5 flex-wrap">
+          <button onClick={Signup} className="flex items-center justify-center gap-2 text-[1rem] text-black font-bold px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
+            Start For Free
+          </button>
+        </div>
+      </section>
+      <section className="bg-[#111827] mt-5 p-10 outline-1 outline-gray-500">
+      <div className="links flex justify-center gap-5 flex-wrap">
+      <p className="text-gray-300 text-[1rem] font-bold mb-4">
+      © 2023 TaskMaster. All rights reserved.
+      </p>
+
+        <a href="#"className="text-gray-300 text-[1rem]  mb-4 hover:text-white">Privacy Policy</a>
+        <a href="#"className="text-gray-300 text-[1rem]  mb-4 hover:text-white">Terms of Service</a>
+        <a href="#"className="text-gray-300 text-[1rem]  mb-4 hover:text-white">Contact</a>
+      </div>
       </section>
     </main>
   );

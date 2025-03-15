@@ -17,7 +17,7 @@ function App() {
   };
 
   return (
-    <main className="relative">
+    <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden">
       <header>
         <NoAuthNav OpenSidebar={OpenSidebar} />
       </header>
