@@ -98,7 +98,7 @@ app.post("/signup", async (req, res) => {
       await newUser.save();
       console.log("User saved successfully");
 
-      res.json({ token: newUser.token, AUTH: true });
+      res.json({ token: newUser.token, AUTH: true, User:newUser});
   } catch (error) {
       console.log("Error details:", error);
       res.status(400).send("Failed to signup, please try again");
@@ -142,6 +142,26 @@ app.post("/login", async (req, res) => {
           error: error.message,
           AUTH: false
       });
+  }
+});
+app.get("/user", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email }).select("-Password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid token", error: error.message });
   }
 });
 

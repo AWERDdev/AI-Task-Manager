@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import NoAuthNav from "./Components/NoAuthNav";
+import NoAuthNavNoOutline from "./Components/NoAuthNavNoOutline";
 import NoAuthSideBar from "./Components/NoAuthSideBar";
 
 function App() {
@@ -17,22 +17,19 @@ function App() {
   };
 
   return (
-    <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden">
+    <main className="relative bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100 w-screen h-screen overflow-x-hidden">
       <header>
-        <NoAuthNav OpenSidebar={OpenSidebar} />
+        <NoAuthNavNoOutline OpenSidebar={OpenSidebar} />
       </header>
-
-      {/* Background Overlay - Shows when sidebar is open */}
       {isOpen && (
         <div
           className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"
-          onClick={CloseSidebar} // Clicking the background closes the sidebar
+          onClick={CloseSidebar}
         ></div>
       )}
 
-      {/* Sidebar */}
       <section
-        className={`SideBar fixed h-full w-[70%]  shadow-lg top-0 left-0 transition-transform duration-300 z-20 ${
+        className={`SideBar fixed h-full w-[70%] max-w-[300px] shadow-lg top-0 left-0 transition-transform duration-300 z-20 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

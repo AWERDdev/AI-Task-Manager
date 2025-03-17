@@ -12,7 +12,10 @@ function NoAuthSideBar({CloseSidebar}) {
       {/* Sidebar Links */}
       <div className="Links grid gap-5 ml-5">
         <a href="/" className="text-lg text-blue-500 font-extrabold hover:no-underline">
-          Home
+        Dashboard
+        </a>
+        <a href="/Profile" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
+        Profile
         </a>
         <a href="https://github.com/AWERDdev" className="text-lg text-white font-extrabold hover:text-blue-500 no-underline hover:no-underline">
           AWERDdev
