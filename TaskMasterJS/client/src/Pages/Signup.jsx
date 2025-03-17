@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 function Signup() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
+    Username:"",
     fullName: "",
     email: "",
     password: "",
     termsAccepted: false,
   });
+
   const navigate = useNavigate(); // Initialize navigate function
   const Signup = ()=>{
     navigate("/"); // Navigate to the Signup page
@@ -22,9 +24,13 @@ function Signup() {
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full Name is required";
     }
-    
+    if (!formData.Username.trim()) {
+      newErrors.Username = "User name is required";
+  
+    }
     if (!formData.email.match(/^\S+@\S+\.\S+$/)) {
       newErrors.email = "Enter a valid email address";
+   
     }
     
     if (formData.password.length < 8) {
@@ -39,13 +45,50 @@ function Signup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      Signup()
+  const SendDATA = async () => {
+    try {
+      const response = await fetch('http://localhost:3500/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("Data sent successfully");
+        localStorage.setItem('token', data.token);
+        return { success: true };
+      } else {
+        console.log("Failed to send data");
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log(`Failed to send data: ${error}`);
+      return { success: false, message: "Network error" };
     }
   };
-
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      console.log('Valid data, sending to backend...');
+  
+      const result = await SendDATA();
+      
+      if (result.success) {
+        console.log('Signup successful');
+        Signup()
+      } else {
+        console.log('Signup failed:', result.message);
+        setErrors((prev) => ({ ...prev, email: result.message }));
+      }
+    }
+  };
+  
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -56,7 +99,7 @@ function Signup() {
 
   return (
     <>
-      <main className="relative w-screen h-screen overflow-hidden">
+      <main className="relative w-screen h-screen overflow-hidden ">
         <header>
           <NavBarNoOutline OpenSidebar={() => setIsOpen(true)} />
         </header>
@@ -77,13 +120,13 @@ function Signup() {
         </section>
 
         <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
-          <div className="bg-[#111827] p-10 rounded-lg shadow-lg mb-20 w-[30%]">
+          <div className="bg-[#111827] p-10 rounded-lg shadow-lg mb-20 w-[30%] min-w-[300px]">
             <div className="text-center mb-6">
               <h2 className="text-white text-2xl font-bold">Create an account</h2>
               <p className="text-gray-400 text-sm">Join TaskMaster and start organizing your life</p>
             </div>
 
-            <form className="grid gap-5 w-full" onSubmit={handleSubmit}>
+            <form className="grid gap-5 w-full  " onSubmit={handleSubmit} >
               <div>
                 <label htmlFor="fullName" className="text-white text-[1rem]">Full Name</label>
                 <input
@@ -96,7 +139,18 @@ function Signup() {
                 />
                 {errors.fullName && <p className="text-red-500 text-xs">{errors.fullName}</p>}
               </div>
-
+              <div>
+                <label htmlFor="Username" className="text-white text-[1rem]">Username</label>
+                <input
+                  type="text"
+                  id="Username"
+                  value={formData.Username}
+                  onChange={handleChange}
+                  placeholder="JohnDoey"
+                  className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                />
+                {errors.UserName && <p className="text-red-500 text-xs">{errors.Username}</p>}
+              </div>
               <div>
                 <label htmlFor="email" className="text-white text-[1rem]">Email Address</label>
                 <input

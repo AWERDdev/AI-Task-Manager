@@ -7,7 +7,6 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-
   const OpenSidebar = () => setIsOpen(true);
   const CloseSidebar = () => setIsOpen(false);
   const navigate = useNavigate(); // Initialize navigate function
@@ -34,14 +33,50 @@ function Login() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted", { email, password });
-      Signup()
+  const SendDATA = async () => {
+    try {
+      const response = await fetch('http://localhost:3500/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email:email,password:password}),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("Data sent successfully");
+        localStorage.setItem('token', data.token);
+        return { success: true };
+      } else {
+        console.log("Failed to send data");
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log(`Failed to send data: ${error}`);
+      return { success: false, message: "Network error" };
     }
   };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      console.log('Valid data, sending to backend...');
+  
+      const result = await SendDATA();
+      
+      if (result.success) {
+        console.log('Signup successful');
+        Signup()
+      } else {
+        console.log('Signup failed:', result.message);
+        setErrors((prev) => ({ ...prev, email: result.message }));
+      }
+    }
+  };
+  
 
   return (
     <>
@@ -70,7 +105,7 @@ function Login() {
 
         {/* Login Form */}
         <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
-          <div className="bg-[#111827] p-10 rounded-lg shadow-lg mb-20 w-[30%]">
+          <div className="bg-[#111827] p-10 rounded-lg shadow-lg mb-20 w-[30%] min-w-[300px]">
             {/* Title Section */}
             <div className="text-center mb-10">
               <h2 className="text-white text-2xl">Welcome back</h2>
@@ -109,7 +144,7 @@ function Login() {
 
               {/* Submit Button */}
               <div className="mt-6">
-                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                <button onClick={SendDATA}type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
                   Login
                 </button>
                 <p className="text-center mt-4 text-gray-600">
