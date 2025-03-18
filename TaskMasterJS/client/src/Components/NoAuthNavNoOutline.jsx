@@ -41,7 +41,7 @@ function NoAuthNav({ OpenSidebar }) {
   }, []);
 
   return (
-    <nav className="h-[7vh] w-full shadow-lg bg-[#111827] flex items-center px-5 justify-between">
+    <nav className="fixed  h-[7vh] w-full shadow-lg bg-[#111827] flex items-center px-5 justify-between">
       {/* Left Side: Title & Menu Button */}
       <div className="flex items-center gap-2">
         <button

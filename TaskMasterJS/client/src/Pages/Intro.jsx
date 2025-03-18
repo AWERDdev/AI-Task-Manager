@@ -25,7 +25,7 @@ function Intro() {
   return (
     <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden">
       <header >
-        <NavBar OpenSidebar={OpenSidebar} />
+        <NavBar className="fixed" OpenSidebar={OpenSidebar} />
       </header>
 
       {isOpen && (

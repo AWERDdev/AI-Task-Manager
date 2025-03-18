@@ -13,7 +13,7 @@ function NavBar({ OpenSidebar }) {  // ✅ Fix destructuring
     navigate("/Intro"); // Navigate to the Signup page
   }
   return (
-    <nav className="h-[7vh] w-full shadow-lg rounded-none top-0 left-0 bg-[#111827] outline-1 outline-gray-600 ">
+    <nav className="fixed h-[7vh] w-full shadow-lg rounded-none top-0 left-0 bg-[#111827] outline-1 outline-gray-600 ">
       <header className="flex justify-between items-center h-full px-5">
         {/* Left Side: Title & Menu Button */}
         <div className="title flex items-center gap-2">
