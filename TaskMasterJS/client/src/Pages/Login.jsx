@@ -33,29 +33,27 @@ function Login() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  
   const SendDATA = async () => {
     try {
-      const response = await fetch('http://localhost:3500/login', {
+      const response = await fetch('http://localhost:3500/api/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email:email,password:password}),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
   
       const data = await response.json();
+      console.log("Server Response:", data); // Debugging
   
       if (response.ok) {
-        console.log("Data sent successfully");
         localStorage.setItem('token', data.token);
         return { success: true };
       } else {
-        console.log("Failed to send data");
-        return { success: false, message: data.message };
+        return { success: false, message: data.message, status: response.status };
       }
     } catch (error) {
-      console.log(`Failed to send data: ${error}`);
-      return { success: false, message: "Network error" };
+      console.error(`Network Error: ${error}`);
+      return { success: false, message: "Network error", status: 500 };
     }
   };
   
@@ -63,20 +61,49 @@ function Login() {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log('Valid data, sending to backend...');
-  
-      const result = await SendDATA();
-      
-      if (result.success) {
-        console.log('Signup successful');
-        Signup()
-      } else {
-        console.log('Signup failed:', result.message);
-        setErrors((prev) => ({ ...prev, email: result.message }));
-      }
+        console.log("Valid data, sending to backend...");
+
+        try {
+            const result = await SendDATA(); // Make sure this properly fetches API response
+
+            if (result.success) {
+                console.log("Signup successful");
+                Signup();
+            } else {
+                console.error("Signup failed:", result.message);
+
+                setErrors((prev) => {
+                    let newErrors = { ...prev };
+
+                    console.log("Received error:", result); // Debugging
+
+                    if (result.status === 400) {
+                        newErrors.email = result.message || "Invalid input. Please check your details.";
+                        newErrors.password = "";
+                    } else if (result.status === 404) {
+                        newErrors.email = result.message || "Email not found.";
+                    } else if (result.status === 401) {
+                        newErrors.password = result.message || "Incorrect password.";
+                    } else {
+                        newErrors.email = "Something went wrong. Please try again later.";
+                        newErrors.password = "";
+                    }
+
+                    return newErrors;
+                });
+            }
+        } catch (error) {
+            console.error("Request failed:", error);
+
+            setErrors((prev) => ({
+                ...prev,
+                email: "Something went wrong. Please try again later.",
+                password: "",
+            }));
+        }
     }
-  };
-  
+};
+
 
   return (
     <>

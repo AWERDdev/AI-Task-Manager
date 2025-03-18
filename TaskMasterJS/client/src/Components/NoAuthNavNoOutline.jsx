@@ -16,7 +16,7 @@ function NoAuthNav({ OpenSidebar }) {
       if (!token) return; // If no token, user is not logged in
 
       try {
-        const response = await fetch("http://localhost:3500/user", {
+        const response = await fetch("http://localhost:3500/api/user", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

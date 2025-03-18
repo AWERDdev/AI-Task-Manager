@@ -47,7 +47,7 @@ function Signup() {
 
   const SendDATA = async () => {
     try {
-      const response = await fetch('http://localhost:3500/signup', {
+      const response = await fetch('http://localhost:3500/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
