@@ -10,7 +10,7 @@ function SideBar() {
   };
 
   return (
-    <main className="fixed overflow-auto top-[7vh] left-0 h-[calc(100vh-7vh)] w-[20%] shadow-lg bg-[#111827] outline-1 outline-[#d1d5db] p-5 z-40">
+    <main className="fixed hidden lg:grid overflow-auto top-[7vh] left-0 h-[calc(100vh-7vh)] w-[20%] shadow-lg bg-[#111827] outline-1 outline-[#d1d5db] p-5 z-40">
       
       {/* Close Button */}
       <div className="TopSide flex justify-between mb-3">
