@@ -1,75 +1,39 @@
-import { useState } from "react";
+// import { useState } from "react";
 import NavBarNoOutline from "../Components/NavBarNoOutline";
 import SideBar from "../Components/SideBar";
 import { useNavigate } from "react-router-dom";
+
+// Import our utility functions
+import { useForm, validateSignupForm } from "../Tools/validateSignupForm";
+import { sendSignupData } from "../Tools/sendSignupData";
+import { useSidebar } from "../tools/sidebarUtils";
+
 function Signup() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    Username:"",
+  // Use our sidebar utility
+  const { isOpen, openSidebar, closeSidebar } = useSidebar();
+  
+  const navigate = useNavigate();
+  
+  const goToDashboard = () => {
+    navigate("/"); // Navigate to the dashboard page
+  };
+  
+  // Use our form utility
+  const initialValues = {
+    Username: "",
     fullName: "",
     email: "",
     password: "",
     termsAccepted: false,
-  });
-
-  const navigate = useNavigate(); // Initialize navigate function
-  const Signup = ()=>{
-    navigate("/"); // Navigate to the Signup page
-  }
-  const [errors, setErrors] = useState({});
-
-  const validateForm = () => {
-    let newErrors = {};
-    
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full Name is required";
-    }
-    if (!formData.Username.trim()) {
-      newErrors.Username = "User name is required";
-  
-    }
-    if (!formData.email.match(/^\S+@\S+\.\S+$/)) {
-      newErrors.email = "Enter a valid email address";
-   
-    }
-    
-    if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long";
-    }
-    
-    if (!formData.termsAccepted) {
-      newErrors.termsAccepted = "You must accept the terms";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
-
-  const SendDATA = async () => {
-    try {
-      const response = await fetch('http://localhost:3500/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
   
-      const data = await response.json();
-  
-      if (response.ok) {
-        console.log("Data sent successfully");
-        localStorage.setItem('token', data.token);
-        return { success: true };
-      } else {
-        console.log("Failed to send data");
-        return { success: false, message: data.message };
-      }
-    } catch (error) {
-      console.log(`Failed to send data: ${error}`);
-      return { success: false, message: "Network error" };
-    }
-  };
+  const { 
+    formData, 
+    errors, 
+    handleChange, 
+    validateForm, 
+    setErrors 
+  } = useForm(initialValues, validateSignupForm);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,37 +41,29 @@ function Signup() {
     if (validateForm()) {
       console.log('Valid data, sending to backend...');
   
-      const result = await SendDATA();
+      const result = await sendSignupData(formData);
       
       if (result.success) {
         console.log('Signup successful');
-        Signup()
+        goToDashboard();
       } else {
         console.log('Signup failed:', result.message);
         setErrors((prev) => ({ ...prev, email: result.message }));
       }
     }
   };
-  
-  const handleChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: type === "checkbox" ? checked : value,
-    }));
-  };
 
   return (
     <>
       <main className="relative w-screen h-screen overflow-hidden ">
         <header>
-          <NavBarNoOutline OpenSidebar={() => setIsOpen(true)} />
+          <NavBarNoOutline OpenSidebar={openSidebar} />
         </header>
 
         {isOpen && (
           <div
             className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"
-            onClick={() => setIsOpen(false)}
+            onClick={closeSidebar}
           ></div>
         )}
 
@@ -116,7 +72,7 @@ function Signup() {
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <SideBar CloseSidebar={() => setIsOpen(false)} />
+          <SideBar CloseSidebar={closeSidebar} />
         </section>
 
         <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
@@ -126,7 +82,7 @@ function Signup() {
               <p className="text-gray-400 text-sm">Join TaskMaster and start organizing your life</p>
             </div>
 
-            <form className="grid gap-5 w-full  " onSubmit={handleSubmit} >
+            <form className="grid gap-5 w-full" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="fullName" className="text-white text-[1rem]">Full Name</label>
                 <input
@@ -149,7 +105,7 @@ function Signup() {
                   placeholder="JohnDoey"
                   className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.UserName && <p className="text-red-500 text-xs">{errors.Username}</p>}
+                {errors.Username && <p className="text-red-500 text-xs">{errors.Username}</p>}
               </div>
               <div>
                 <label htmlFor="email" className="text-white text-[1rem]">Email Address</label>

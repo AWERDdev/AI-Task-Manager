@@ -1,6 +1,6 @@
 import { FaBell, FaCog, FaSignOutAlt, FaUser, FaSignInAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useUser } from "../tools/userUtils";
+import { useUser } from "../tools/FetchUserData";
 
 function Profile() {
   const { user, loading, logoutUser } = useUser();
