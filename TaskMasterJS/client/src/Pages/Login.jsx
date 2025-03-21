@@ -1,123 +1,69 @@
-import { useState } from "react";
 import NavBarNoOutline from "../Components/NavBarNoOutline";
 import SideBar from "../Components/SideBar";
-import { useNavigate } from "react-router-dom";
+
+// Import our utility functions
+import { useSidebar } from "../tools/sidebarUtils";
+import { useNavigation } from "../tools/navigationUtils";
+import { useFormValidation } from "../tools/validationUtils";
+import { sendLoginData, handleLoginErrors } from "../tools/authUtils";
+
 function Login() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const OpenSidebar = () => setIsOpen(true);
-  const CloseSidebar = () => setIsOpen(false);
-  const navigate = useNavigate(); // Initialize navigate function
+  // Use our custom hooks
+  const { isOpen, openSidebar, closeSidebar } = useSidebar();
+  const { goToSignup } = useNavigation();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    errors,
+    setErrors,
+    validateForm
+  } = useFormValidation();
 
-  const Signup = ()=>{
-    navigate("/"); // Navigate to the Signup page
-  }
-
-  const validateForm = () => {
-    let newErrors = {};
-    
-    if (!email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = "Invalid email format";
-    }
-    
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else if (password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-  
-  const SendDATA = async () => {
-    try {
-      const response = await fetch('http://localhost:3500/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-      console.log("Server Response:", data); // Debugging
-  
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        return { success: true };
-      } else {
-        return { success: false, message: data.message, status: response.status };
-      }
-    } catch (error) {
-      console.error(`Network Error: ${error}`);
-      return { success: false, message: "Network error", status: 500 };
-    }
-  };
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-        console.log("Valid data, sending to backend...");
+      console.log("Valid data, sending to backend...");
 
-        try {
-            const result = await SendDATA(); // Make sure this properly fetches API response
+      try {
+        const result = await sendLoginData(email, password);
 
-            if (result.success) {
-                console.log("Signup successful");
-                Signup();
-            } else {
-                console.error("Signup failed:", result.message);
-
-                setErrors((prev) => {
-                    let newErrors = { ...prev };
-
-                    console.log("Received error:", result); // Debugging
-
-                    if (result.status === 400) {
-                        newErrors.email = result.message || "Invalid input. Please check your details.";
-                        newErrors.password = "";
-                    } else if (result.status === 404) {
-                        newErrors.email = result.message || "Email not found.";
-                    } else if (result.status === 401) {
-                        newErrors.password = result.message || "Incorrect password.";
-                    } else {
-                        newErrors.email = "Something went wrong. Please try again later.";
-                        newErrors.password = "";
-                    }
-
-                    return newErrors;
-                });
-            }
-        } catch (error) {
-            console.error("Request failed:", error);
-
-            setErrors((prev) => ({
-                ...prev,
-                email: "Something went wrong. Please try again later.",
-                password: "",
-            }));
+        if (result.success) {
+          console.log("Login successful");
+          goToSignup(); // Navigate to the next page after login
+        } else {
+          console.error("Login failed:", result.message);
+          setErrors((prev) => {
+            console.log("Received error:", result); // Debugging
+            return { ...prev, ...handleLoginErrors(result) };
+          });
         }
+      } catch (error) {
+        console.error("Request failed:", error);
+        setErrors((prev) => ({
+          ...prev,
+          email: "Something went wrong. Please try again later.",
+          password: "",
+        }));
+      }
     }
-};
-
+  };
 
   return (
     <>
       <main className="relative w-screen h-screen overflow-hidden">
         {/* Navbar */}
         <header>
-          <NavBarNoOutline OpenSidebar={OpenSidebar} />
+          <NavBarNoOutline OpenSidebar={openSidebar} />
         </header>
 
         {/* Sidebar Overlay */}
         {isOpen && (
           <div
             className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"
-            onClick={CloseSidebar}
+            onClick={closeSidebar}
           ></div>
         )}
 
@@ -127,7 +73,7 @@ function Login() {
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <SideBar CloseSidebar={CloseSidebar} />
+          <SideBar CloseSidebar={closeSidebar} />
         </section>
 
         {/* Login Form */}
@@ -171,11 +117,11 @@ function Login() {
 
               {/* Submit Button */}
               <div className="mt-6">
-                <button onClick={SendDATA}type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
                   Login
                 </button>
                 <p className="text-center mt-4 text-gray-600">
-                  Don’t have an account? <a href="/Signup" className="text-blue-500">Sign up</a>
+                  Dont have an account? <a href="/Signup" className="text-blue-500">Sign up</a>
                 </p>
               </div>
             </form>
@@ -187,4 +133,3 @@ function Login() {
 }
 
 export default Login;
-

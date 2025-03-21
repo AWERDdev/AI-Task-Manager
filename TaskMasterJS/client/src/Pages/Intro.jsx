@@ -1,37 +1,30 @@
-import { useState } from "react";
 import NavBar from "../Components/NavBar";
 import SideBar from "../Components/SideBar";
 import { ArrowRight } from 'lucide-react';
 import Cards from "../Components/Cards";
 import { ListChecks, Clock, CheckCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
+
+// tools
+import { useSidebar } from "../Tools/sidebarUtils";
+import { useNavigation } from "../Tools/navigationUtils";
+
 function Intro() {
-  const [isOpen, setIsOpen] = useState(false);
+  const {isOpen, openSidebar, closeSidebar} = useSidebar();
   const Icon1 = <ListChecks />;
   const Icon2 = <Clock />;
   const Icon3 = <CheckCircle />;
-
-  const OpenSidebar = () => setIsOpen(true);
-  const CloseSidebar = () => setIsOpen(false);
-
-  const navigate = useNavigate(); // Initialize navigate function
-  const LoginPath = ()=>{
-    navigate("/Login"); // Navigate to the Signup page
-  }
-  const Signup = ()=>{
-    navigate("/Signup"); // Navigate to the Signup page
-  }
-
+  const { goToSignup, goToLogin, } = useNavigation();
   return (
     <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden">
       <header >
-        <NavBar className="fixed" OpenSidebar={OpenSidebar} />
+        <NavBar className="fixed" OpenSidebar={openSidebar} />
       </header>
 
       {isOpen && (
         <div
           className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"
-          onClick={CloseSidebar}
+          onClick={closeSidebar}
         ></div>
       )}
 
@@ -40,7 +33,7 @@ function Intro() {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <SideBar CloseSidebar={CloseSidebar} />
+        <SideBar CloseSidebar={closeSidebar} />
       </section>
 
       <section className="SectionOne mx-auto max-w-[1200px] px-5 text-center">
@@ -51,10 +44,10 @@ function Intro() {
           The simple, efficient way to manage your daily tasks, projects, and goals all in one place.
         </p>
         <div className="flex justify-center gap-5 flex-wrap">
-          <button onClick={Signup} className="flex items-center justify-center gap-2 text-[1rem] text-black  px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
+          <button onClick={goToSignup} className="flex items-center justify-center gap-2 text-[1rem] text-black  px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
             Get Started <ArrowRight />
           </button>
-          <button onClick={LoginPath} className="text-[1rem] text-white hover:text-black  px-6 py-3 min-w-[100px] max-w-[150px] border border-white rounded-md hover:bg-gray-500 transition-all duration-300">
+          <button onClick={goToLogin} className="text-[1rem] text-white hover:text-black  px-6 py-3 min-w-[100px] max-w-[150px] border border-white rounded-md hover:bg-gray-500 transition-all duration-300">
             Login
           </button>
         </div>
@@ -92,7 +85,7 @@ function Intro() {
         </p>
         </div>
         <div className="flex justify-center gap-5 flex-wrap">
-          <button onClick={Signup} className="flex items-center justify-center gap-2 text-[1rem] text-black font-bold px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
+          <button onClick={goToSignup} className="flex items-center justify-center gap-2 text-[1rem] text-black font-bold px-6 py-3 min-w-[130px] max-w-[200px] bg-[#1e3a8a] rounded-md hover:bg-blue-500 transition-all duration-300">
             Start For Free
           </button>
         </div>

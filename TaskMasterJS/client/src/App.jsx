@@ -1,29 +1,30 @@
-import { useState } from "react";
 import "./App.css";
 import NoAuthNavNoOutline from "./Components/NoAuthNavNoOutline";
 import NoAuthSideBar from "./Components/NoAuthSideBar";
 import MainAppSideBar from "./Components/MainAppSideBar";
 import Button from "./Components/Button";
-import TaskCard from "./Components/TaskCard";
-function App() {
-  const [isOpen, setIsOpen] = useState(false);
 
-  const OpenSidebar = () => setIsOpen(true);
-  const CloseSidebar = () => setIsOpen(false);
+// Import the sidebar utility
+import { useSidebar } from "./tools/sidebarUtils";
+
+function App() {
+  // Use the sidebar utility instead of managing state directly
+  const { isOpen, openSidebar, closeSidebar } = useSidebar();
+  
   const CreateTask = () => console.log("Creating Task...");
 
   return (
-    <main className="relative  bg-[#111827] w-screen h-screen overflow-x-hidden text-gray-300">
+    <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden text-gray-300">
       {/* Navbar */}
       <header className="fixed top-0 left-0 w-full z-30 bg-[#0f172a] shadow-md">
-        <NoAuthNavNoOutline OpenSidebar={OpenSidebar} />
+        <NoAuthNavNoOutline OpenSidebar={openSidebar} />
       </header>
 
       {/* Overlay */}
       {isOpen && (
         <div
           className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-20"
-          onClick={CloseSidebar}
+          onClick={closeSidebar}
         ></div>
       )}
 
@@ -33,7 +34,7 @@ function App() {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <NoAuthSideBar CloseSidebar={CloseSidebar} />
+        <NoAuthSideBar CloseSidebar={closeSidebar} />
       </section>
 
       {/* Main Content */}
@@ -78,8 +79,8 @@ function App() {
         </section>
 
         {/* Filters */}
-        <section className="mt-6 grid lg:flex justify-center w-full gap-5">
-          <div className="grid lg:flex gap-5 justify-center items-center bg-gray-700 max-w-[400px] p-4 rounded">
+        <section className="mt-6 grid lg:flex lg:justify-start justify-center w-full gap-5">
+          <div className="grid lg:flex gap-5 lg:justify-start justify-center items-center bg-gray-700 max-w-[400px] p-4 rounded">
             <button className="filter text-gray-300 focus:text-white focus:bg-[#1e3a8a] rounded-md w-full p-2">
               All
             </button>

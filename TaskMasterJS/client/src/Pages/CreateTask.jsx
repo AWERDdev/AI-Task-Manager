@@ -7,6 +7,9 @@ function Task() {
     const OpenSidebar = () => setIsOpen(true);
     const CloseSidebar = () => setIsOpen(false);
     
+    const HandleFuntions = () =>{
+
+    }
     return (
       <>
         <main className="relative w-screen h-screen overflow-hidden">
@@ -89,7 +92,7 @@ function Task() {
   
                 {/* Submit Button */}
                 <div className="mt-6">
-                  <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                  <button onClick={HandleFuntions} type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
                     Create Task
                   </button>
                 </div>
