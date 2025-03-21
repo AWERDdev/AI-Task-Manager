@@ -13,7 +13,7 @@ function App() {
   const CreateTask = () => console.log("Creating Task...");
 
   return (
-    <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden text-gray-300">
+    <main className="relative  bg-[#111827] w-screen h-screen overflow-x-hidden text-gray-300">
       {/* Navbar */}
       <header className="fixed top-0 left-0 w-full z-30 bg-[#0f172a] shadow-md">
         <NoAuthNavNoOutline OpenSidebar={OpenSidebar} />
@@ -37,7 +37,7 @@ function App() {
       </section>
 
       {/* Main Content */}
-      <div className="pl-[300px] pt-[70px] pr-5">
+      <div className="pl-5 lg:pl-[300px] pt-[70px] pr-5">
         <section className="mb-4">
           <MainAppSideBar />
         </section>
@@ -50,11 +50,11 @@ function App() {
 
         {/* Search and Filters */}
         <section className="mt-6">
-          <div className="w-auto bg-[#1f2937] p-4 rounded flex gap-4">
+          <div className="w-auto grid justify-center bg-[#1f2937] p-4 rounded lg:flex gap-4">
             <input
               type="text"
               placeholder="🔍 Search tasks..."
-              className="w-[40vw] px-3 py-2 bg-[#374151] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-[80vw] lg:w-[40vw] px-3 py-2 bg-[#374151] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
             />
             <select className="cursor-pointer p-2 bg-[#374151] text-white border-none rounded-md">
               <option value="" disabled selected>All Priorities</option>
@@ -78,8 +78,8 @@ function App() {
         </section>
 
         {/* Filters */}
-        <section className="mt-6">
-          <div className="flex gap-5 bg-gray-700 max-w-[400px] p-4 rounded">
+        <section className="mt-6 grid lg:flex justify-center w-full gap-5">
+          <div className="grid lg:flex gap-5 justify-center items-center bg-gray-700 max-w-[400px] p-4 rounded">
             <button className="filter text-gray-300 focus:text-white focus:bg-[#1e3a8a] rounded-md w-full p-2">
               All
             </button>

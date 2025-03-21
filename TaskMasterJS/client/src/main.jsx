@@ -7,12 +7,14 @@ import Intro from './Pages/Intro.jsx'; // ✅ Import the Intro component
 import Signup from './Pages/Signup.jsx';
 import Login from './Pages/Login.jsx';
 import Profile from './Pages/Profile.jsx'
+import CreateTask from './Pages/CreateTask.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/Intro" element={<Intro />} />
         <Route path="/" element={<App />} />
+        <Route path="/CreateTask" element={<CreateTask />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Login" element={<Login />} />

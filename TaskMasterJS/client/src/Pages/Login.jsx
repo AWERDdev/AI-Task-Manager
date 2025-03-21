@@ -132,7 +132,7 @@ function Login() {
 
         {/* Login Form */}
         <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
-          <div className="bg-[#111827] p-10 rounded-lg shadow-lg mb-20 w-[30%] min-w-[400px]">
+          <div className="bg-[#111827] p-10 rounded-lg shadow-lg  w-[30%] min-w-[400px]">
             {/* Title Section */}
             <div className="text-center mb-10">
               <h2 className="text-white text-2xl">Welcome back</h2>

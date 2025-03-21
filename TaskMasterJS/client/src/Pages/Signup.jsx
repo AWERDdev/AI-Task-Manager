@@ -120,7 +120,7 @@ function Signup() {
         </section>
 
         <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
-          <div className="bg-[#111827] p-10 rounded-lg shadow-lg mb-20 w-[30%] min-w-[400px]">
+          <div className="bg-[#111827] p-10 rounded-lg shadow-lg  w-[30%] min-w-[400px]">
             <div className="text-center mb-6">
               <h2 className="text-white text-2xl font-bold">Create an account</h2>
               <p className="text-gray-400 text-sm">Join TaskMaster and start organizing your life</p>
