@@ -1,13 +1,11 @@
 // import PropTypes from 'prop-types';
 import Button from "./Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigation } from "../tools/navigationUtils"
 
 function SideBar() {
-  const navigate = useNavigate(); // Initialize navigate function
+  const { goToCreateTask  } =  useNavigation()
+  
 
-  const CreateTaskPath = () => {
-    navigate("/Login"); // Navigate to the Signup page
-  };
 
   return (
     <main className="fixed hidden lg:grid overflow-auto top-[7vh] left-0 h-[calc(100vh-7vh)] w-[20%] shadow-lg bg-[#111827] outline-1 outline-[#d1d5db] p-5 z-40">
@@ -15,7 +13,7 @@ function SideBar() {
       {/* Close Button */}
       <div className="TopSide flex justify-between mb-3">
         <h1 className="text-white text-[1.5rem] font-extrabold mb-4">Tasks</h1>
-        <Button text="+ New" buttonClick={CreateTaskPath} />
+        <Button text="+ New" buttonClick={goToCreateTask} />
       </div>
 
       {/* Sidebar Filters */}

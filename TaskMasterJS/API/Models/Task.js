@@ -5,12 +5,11 @@ const TaskSchema = new mongoose.Schema({
   Task: { type: String, required: true },
   importance: { type: String, unique: true, required: true },
   type: { type: String, required: true },
-  Iscompleted: { type: Boolean, required: true },
-  token: { type: String }
+
 });
 
 // Prevent model overwrite error
-const Task = mongoose.models.Task || mongoose.model('User', TaskSchema);
+const Task = mongoose.models.Task || mongoose.model('Task', TaskSchema);
 
 module.exports = Task;
 ``

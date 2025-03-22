@@ -6,12 +6,13 @@ import Button from "./Components/Button";
 
 // Import the sidebar utility
 import { useSidebar } from "./tools/sidebarUtils";
+import { useNavigation } from "./tools/navigationUtils"
 
 function App() {
   // Use the sidebar utility instead of managing state directly
   const { isOpen, openSidebar, closeSidebar } = useSidebar();
+  const { goToCreateTask  } =  useNavigation()
   
-  const CreateTask = () => console.log("Creating Task...");
 
   return (
     <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden text-gray-300">
@@ -46,7 +47,7 @@ function App() {
         {/* Header */}
         <section className="flex justify-between items-center mt-4">
           <h1 className="text-white text-[1.8rem] font-bold">My Tasks</h1>
-          <Button text="+ Add Task" buttonClick={CreateTask} />
+          <Button text="+ Add Task" buttonClick={goToCreateTask} />
         </section>
 
         {/* Search and Filters */}
@@ -79,7 +80,7 @@ function App() {
         </section>
 
         {/* Filters */}
-        <section className="mt-6 grid lg:flex lg:justify-start justify-center w-full gap-5">
+        <section className="mt-6 grid md:flex lg:justify-start md:justify-center w-full gap-5">
           <div className="grid lg:flex gap-5 lg:justify-start justify-center items-center bg-gray-700 max-w-[400px] p-4 rounded">
             <button className="filter text-gray-300 focus:text-white focus:bg-[#1e3a8a] rounded-md w-full p-2">
               All

@@ -1,10 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const User = require('../Models/User'); // Import your User model
-const JWT_SECRET = "your_secret_key"; // Make sure to replace this with a real secret key
+const Task = require('../Models/Task'); // Import your Task model
 
+router.post('/CreateTask', async (req, res) => {
+    try {
+        const { title, Description, Priority, Type } = req.body;
+        console.log(title)
+        console.log(Description)
+        console.log(Priority)
+        console.log(Type)
+        
+        // Check if required fields are provided
+        if (!title || !Description || !Priority || !Type) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
 
+        console.log(title, Description, Priority, Type);
+
+        // Check if the task already exists
+        const existingTask = await Task.findOne({ TaskTitle: title });
+        if (existingTask) {
+            return res.status(409).json({
+                message: "There is already an existing task with the same title.",
+            });
+        }
+
+        // Create new task with correct field names
+        const newTask = new Task({
+            TaskTitle: title,
+            Task: Description,
+            importance: Priority,
+            type: Type,  // Ensure lowercase `type` to match schema
+        });
+
+        await newTask.save();
+        res.json({ message: "Task Created successfully", task: newTask });
+
+    } catch (error) {
+        console.error("Error details:", error);
+        res.status(500).json({ message: "Failed to create task, please try again." });
+    }
+});
 
 module.exports = router;

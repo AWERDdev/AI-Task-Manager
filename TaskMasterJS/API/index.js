@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS Setup
 app.use(cors({
-  origin: ['https://stockmarket-frontend-ebon.vercel.app', 'http://localhost:5173','http://localhost:5174','http://localhost:5173','http://localhost:5175'],
+  origin: ['https://stockmarket-frontend-ebon.vercel.app', 'http://localhost:5173','http://localhost:5174','http://localhost:5175'],
   credentials: true
 }));
 

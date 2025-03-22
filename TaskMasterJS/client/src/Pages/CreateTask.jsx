@@ -1,28 +1,61 @@
-import { useState } from "react";
+// import { useState } from "react";
 import NoAuthNavNoOutline from "../Components/NoAuthNavNoOutline";
 import NoAuthSideBar from "../Components/SideBar";
 
-function Task() {
-    const [isOpen, setIsOpen] = useState(false);
-    const OpenSidebar = () => setIsOpen(true);
-    const CloseSidebar = () => setIsOpen(false);
-    
-    const HandleFuntions = () =>{
+// tools
+import {useSidebar} from "../tools/sidebarUtils";
+import { useTaskFormValidation , sendTaskData , handleTaskErrors } from "../Tools/CreateTaskUtils"
+import { useNavigation } from "../Tools/navigationUtils"
 
-    }
+function Task() {
+    const {isOpen,openSidebar,closeSidebar} = useSidebar();
+    const { title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask } = useTaskFormValidation()
+    const { goToDashboard } = useNavigation()
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      
+      if (validateForm()) {
+        console.log("Valid data, sending to backend...");
+  
+        try {
+          console.log("Seening results")
+          const result = await sendTaskData(title, Description, Priority, Type);
+          console.log("results recived")
+          if (result.success) {
+            console.log("Task Created successful")
+            goToDashboard()
+          } else {
+            console.error("Failed to Create Task:", result.message);
+            setErrors((prev) => {
+              console.log("Received error:", result); // Debugging
+              return { ...prev, ...handleTaskErrors(result) };
+            });
+          }
+        } catch (error) {
+          console.error("Request failed:", error);
+          setErrors((prev) => ({
+            ...prev,
+            email: "Something went wrong. Please try again later.",
+            password: "",
+          }));
+        }
+      }
+    };
+
     return (
       <>
         <main className="relative w-screen h-screen overflow-hidden">
           {/* Navbar */}
           <header>
-            <NoAuthNavNoOutline OpenSidebar={OpenSidebar} />
+            <NoAuthNavNoOutline OpenSidebar={openSidebar} />
           </header>
   
           {/* Sidebar Overlay */}
           {isOpen && (
             <div
               className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"
-              onClick={CloseSidebar}
+              onClick={closeSidebar}
             ></div>
           )}
   
@@ -32,12 +65,12 @@ function Task() {
               isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <NoAuthSideBar CloseSidebar={CloseSidebar} />
+            <NoAuthSideBar CloseSidebar={closeSidebar} />
           </section>
   
           {/* Task Creation Form */}
           <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
-            <div className="bg-[#111827] p-10 rounded-lg shadow-lg w-[30%] min-w-[400px]">
+            <div className="bg-[#111827] p-10 rounded-lg shadow-lg mt-10 w-[30%] min-w-[400px]">
               {/* Title Section */}
               <div className="text-center mb-10">
                 <h2 className="text-white text-2xl">Create a Task</h2>
@@ -53,7 +86,14 @@ function Task() {
                     id="TaskName"
                     placeholder="Enter task name"
                     className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      setTask((prev) => ({ ...prev, title: e.target.value }));
+                    }}
+                    
                   />
+                  <label htmlFor="TaskName" className="text-red-500">{errors.title}</label>
                 </div>
   
                 {/* Task Description */}
@@ -63,7 +103,15 @@ function Task() {
                     id="TaskDescription"
                     placeholder="Enter task description"
                     className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                    value={Description}
+                    onChange={(e)=> {
+                      setDescription(e.target.value)
+                      setTask((prev) => ({ ...prev, Description: e.target.value }));
+                      }
+                    }
+                    
                   />
+                    <label htmlFor="TaskName"className="text-red-500">{errors.description}</label>
                 </div>
   
                 {/* Task Priority */}
@@ -72,11 +120,18 @@ function Task() {
                   <select
                     id="TaskPriority"
                     className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                    value={Priority}
+                    onChange={(e) => {
+                      setPriority(e.target.value);
+                      setTask((prev) => ({ ...prev, priority: e.target.value }));
+                    }}
+                    
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                   </select>
+                  <label htmlFor="TaskName" className="text-red-500">{errors.Priority}</label>
                 </div>
   
                 {/* Task Type */}
@@ -87,12 +142,19 @@ function Task() {
                     id="TaskType"
                     placeholder="e.g., Personal, Work"
                     className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                    value={Type}
+                    onChange={(e) => {
+                      setType(e.target.value);
+                      setTask((prev) => ({ ...prev, type: e.target.value }));
+                    }}
+                    
                   />
+                  <label htmlFor="TaskName" className="text-red-500">{errors.Type}</label>
                 </div>
   
                 {/* Submit Button */}
                 <div className="mt-6">
-                  <button onClick={HandleFuntions} type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                  <button onClick={handleSubmit} type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
                     Create Task
                   </button>
                 </div>
