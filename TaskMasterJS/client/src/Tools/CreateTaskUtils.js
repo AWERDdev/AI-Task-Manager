@@ -2,11 +2,11 @@ import { useState } from "react";
 
 /**
  * Title validation function
- * @param {string} title - Title to validate
+ * @param {string} Title - Title to validate
  * @returns {boolean} Whether the title is valid
  */
-export const isValidTitle = (title) => {
-  return title && title.trim().length > 0;
+export const isValidTitle = (Title) => {
+  return Title && Title.trim().length > 0;
 };
 
 /**
@@ -28,7 +28,7 @@ export const isValidType = (Type) => {
  * @returns {Object} Form state and validation functions
  */
 export const useTaskFormValidation = () => {
-  const [title, setTitle] = useState("");
+  const [Title, setTitle] = useState("");
   const [Description, setDescription] = useState("");
   const [errors, setErrors] = useState({});
   const [Priority,setPriority] = useState("")
@@ -37,7 +37,7 @@ export const useTaskFormValidation = () => {
   const validateForm = () => {
     let newErrors = {};
     
-    if (!isValidTitle(title)) {
+    if (!isValidTitle(Title)) {
       newErrors.title = "Title is required";
     }
     
@@ -55,7 +55,7 @@ export const useTaskFormValidation = () => {
     return Object.keys(newErrors).length === 0;
   };
   
-  return {title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask,Task,};
+  return {Title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask,Task,};
 };
 
 /**
@@ -63,12 +63,16 @@ export const useTaskFormValidation = () => {
  * @param {Object} Task - Task title
  * @returns {Promise<Object>} Result of the task creation attempt
  */
-export const sendTaskData = async (Task) => {
+export const sendTaskData = async (Title, Description, Priority, Type) => {
   try {
+    // console.log(title)
+    // console.log(Description)
+    // console.log(Priority)
+    // console.log(Type)
     const response = await fetch('http://localhost:3500/api/CreateTask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Task:Task}),
+      body: JSON.stringify({ Title, Description, Priority, Type }),
     });
 
     const data = await response.json();

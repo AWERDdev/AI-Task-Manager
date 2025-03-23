@@ -9,7 +9,7 @@ import { useNavigation } from "../Tools/navigationUtils"
 
 function Task() {
     const {isOpen,openSidebar,closeSidebar} = useSidebar();
-    const { title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask } = useTaskFormValidation()
+    const { Title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask } = useTaskFormValidation()
     const { goToDashboard } = useNavigation()
 
     const handleSubmit = async (e) => {
@@ -20,8 +20,12 @@ function Task() {
   
         try {
           console.log("Seening results")
-          const result = await sendTaskData(title, Description, Priority, Type);
+          const result = await sendTaskData(Title, Description, Priority, Type);
           console.log("results recived")
+          // console.log(Title)
+          // console.log(Description)
+          // console.log(Priority)
+          // console.log(Type)
           if (result.success) {
             console.log("Task Created successful")
             goToDashboard()
@@ -36,8 +40,7 @@ function Task() {
           console.error("Request failed:", error);
           setErrors((prev) => ({
             ...prev,
-            email: "Something went wrong. Please try again later.",
-            password: "",
+            Title: "Something went wrong. Please try again later.",
           }));
         }
       }
@@ -86,7 +89,7 @@ function Task() {
                     id="TaskName"
                     placeholder="Enter task name"
                     className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
-                    value={title}
+                    value={Title}
                     onChange={(e) => {
                       setTitle(e.target.value);
                       setTask((prev) => ({ ...prev, title: e.target.value }));
