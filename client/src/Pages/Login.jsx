@@ -10,7 +10,7 @@ import { sendLoginData, handleLoginErrors } from "../tools/authUtils";
 function Login() {
   // Use our custom hooks
   const { isOpen, openSidebar, closeSidebar } = useSidebar();
-  const { goToSignup } = useNavigation();
+  const { goToDashboard } = useNavigation();
   const {
     email,
     setEmail,
@@ -32,7 +32,7 @@ function Login() {
 
         if (result.success) {
           console.log("Login successful");
-          goToSignup(); // Navigate to the next page after login
+          goToDashboard(); // Navigate to the next page after login
         } else {
           console.error("Login failed:", result.message);
           setErrors((prev) => {

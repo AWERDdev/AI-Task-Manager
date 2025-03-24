@@ -129,7 +129,8 @@ function Task() {
                       setTask((prev) => ({ ...prev, priority: e.target.value }));
                     }}
                     
-                  >
+                  >   
+                    <option value="" disabled selected>Priority</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>

@@ -4,8 +4,8 @@ import SideBar from "../Components/SideBar";
 import { useNavigate } from "react-router-dom";
 
 // Import our utility functions
-import { useForm, validateSignupForm } from "../Tools/validateSignupForm";
-import { sendSignupData } from "../Tools/sendSignupData";
+import { useForm, validateSignupForm } from "../Tools/validationUtils";
+import { sendSignupData } from "../Tools/authUtils";
 import { useSidebar } from "../tools/sidebarUtils";
 
 function Signup() {

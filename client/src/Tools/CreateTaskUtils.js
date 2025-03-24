@@ -45,10 +45,10 @@ export const useTaskFormValidation = () => {
       newErrors.description = "Description is required";
     }   
     if (!isValidPriority(Priority)) {
-      newErrors.Priority = "Description is required";
+      newErrors.Priority = "Priority is required";
     }
-    if (!isValidPriority(Type)) {
-      newErrors.Type = "Description is required";
+    if (!isValidType(Type)) {
+      newErrors.Type = "Type is required";
     }
     
     setErrors(newErrors);

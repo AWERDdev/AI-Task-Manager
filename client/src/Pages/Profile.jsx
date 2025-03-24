@@ -1,9 +1,11 @@
 import { FaBell, FaCog, FaSignOutAlt, FaUser, FaSignInAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useUser } from "../tools/FetchUserData";
-
+import { usePasswordValidation } from "../tools/validationUtils";
+import {handlePasswordErrors,sendNewPassword} from "../tools/authUtils";
 function Profile() {
   const { user, loading, logoutUser } = useUser();
+  const { password,setPassword,errors,setErrors,validatePassword } = usePasswordValidation();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -13,6 +15,34 @@ function Profile() {
 
   const goToLogin = () => {
     navigate("/Login");
+  };
+ const handleSubmitNewPassword = async (e) => {
+    e.preventDefault();
+    
+    if (validatePassword()) {
+      console.log("Valid data, sending to backend...");
+
+      try {
+        const result = await sendNewPassword(password);
+
+        if (result.success) {
+          console.log("Login successful");
+        } else {
+          console.error("Login failed:", result.message);
+          setPassword((prev) => {
+            console.log("Received error:", result); // Debugging
+            return { ...prev, ...handlePasswordErrors(result) };
+          });
+        }
+      } catch (error) {
+        console.error("Request failed:", error);
+        setErrors((prev) => ({
+          ...prev,
+          email: "Something went wrong. Please try again later.",
+          password: "",
+        }));
+      }
+    }
   };
 
   return (
@@ -97,9 +127,9 @@ function Profile() {
             <div className="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
               <h2 className="text-xl mb-4">Personal Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-700 p-2 rounded">{user?.firstName || "John"}</div>
-                <div className="bg-gray-700 p-2 rounded">{user?.lastName || "Doe"}</div>
-                <div className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2">{user?.email || "john@example.com"}</div>
+                <div className="bg-gray-700 p-2 rounded">{user?.name || "Guest"}</div>
+                <div className="bg-gray-700 p-2 rounded">{user?.username || "Guest"}</div>
+                <div className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2">{user?.email || "Guest@gmail.com"}</div>
                 <label htmlFor="BiosBar">Bios</label>
                 <textarea id="BiosBar" className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2 resize-none" rows="4" defaultValue={user?.bio || ""}></textarea>
                 <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded col-span-1 md:col-span-2">
@@ -111,10 +141,18 @@ function Profile() {
             <div className="bg-gray-800 p-6 rounded-lg shadow-md">
               <h2 className="text-xl mb-4">Password</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-700 p-2 rounded">Current Password</div>
-                <input type="password" placeholder="New Password" className="bg-gray-700 p-2 rounded" />
-                <input type="password" placeholder="Confirm New Password" className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2" />
-                <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded col-span-1 md:col-span-2">
+                <div>
+                <input placeholder="Current Password:" className="bg-gray-700 w-full p-2 rounded"/>
+                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+                </div>
+                <div>
+                <input type="password" placeholder="New Password" className="bg-gray-700 w-full p-2 rounded" />
+                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+                </div>
+                <input type="password" placeholder="Confirm New Password" className="bg-gray-700 p-2 w-full rounded col-span-1 md:col-span-2" />
+                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+                
+                <button onClick={handleSubmitNewPassword} className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded col-span-1 md:col-span-2">
                   Update Password
                 </button>
               </div>

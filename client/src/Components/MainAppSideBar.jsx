@@ -28,16 +28,16 @@ function SideBar() {
 
         {/* Filters Section */}
         <div className="space-y-2">
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             📌 All Tasks
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             📅 Today
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             🔜 Upcoming
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             ✅ Completed
           </button>
         </div>
@@ -45,13 +45,13 @@ function SideBar() {
         {/* Priority Filters */}
         <h2 className="text-gray-400 mt-3">Priorities</h2>
         <div className="space-y-2">
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             🔵 Low
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             🟡 Medium
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             🔴 High
           </button>
         </div>
@@ -59,19 +59,19 @@ function SideBar() {
         {/* Tags */}
         <h2 className="text-gray-400 mt-3">Tags</h2>
         <div className="space-y-2">
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             🎯 Work
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             ⚠️ Urgent
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             💙 Personal
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             📚 Learning
           </button>
-          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151]">
+          <button className="flex items-center p-2 bg-[#1f2937] text-white rounded w-full hover:bg-[#374151] focus:bg-[#1e3a8a]">
             🏥 Health
           </button>
         </div>
