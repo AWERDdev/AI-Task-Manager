@@ -187,56 +187,103 @@ export const useForm = (initialValues, validateFn) => {
     resetForm
   };
 };
-  /**
- * Validates signup form data
- * @param {String} Password - The form data to validate
+ /**
+ * Validates password input
+ * @param {string} password - The password to validate
+ * @param {string} confirmPassword - The confirmation password
  * @returns {Object} Object containing errors and isValid flag
  */
-  export const validatePassword = (Password) => {
-    let errors = {};
-    
-    if (!Password) {
-      errors.password = "password is required";
-    }    
-    if (!Password || Password.length < 8) {
-      errors.password = "Password must be at least 8 characters long";
-    }
+export const validatePassword = (password, confirmPassword) => {
+  let errors = {};
 
-    
-    return {
-      errors,
-      isValid: Object.keys(errors).length === 0
-    };
+  if (!password) {
+    errors.password = "Password is required";
+  } else if (password.length < 8) {
+    errors.password = "Password must be at least 8 characters long";
+  }
+
+  if (password !== confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+  }
+
+  return {
+    errors,
+    isValid: Object.keys(errors).length === 0,
   };
+};
 
-  
 
-/**
- * Form validation hook for login/signup
- * @returns {Object} Form state and validation functions
- */
+
+import { validatePassword as validatePasswordHelper } from "./validationUtils"; // Ensure this is the correct path
+
 export const usePasswordValidation = () => {
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({}); 
+
   const validatePassword = () => {
-    let newErrors = {};
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else if (!isValidPassword(password)) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const { errors, isValid } = validatePasswordHelper(password, confirmPassword); // Use the imported function
+    setErrors(errors);
+    return isValid;
   };
-  
+
   return {
     password,
     setPassword,
+    confirmPassword,
+    setConfirmPassword,
     errors,
     setErrors,
-    validatePassword
+    validatePassword,
   };
+};
+
+/**
+ * Custom hook for bios validation
+ */
+export const useBiosValidation = () => {
+  const [bios, setBios] = useState("");
+  const [biosErrors, setBiosErrors] = useState({}); // Changed from BiosErrors to biosErrors for consistency
+
+  const validateBios = () => {
+    // Simple validation for now
+    let errors = {};
+    let isValid = true;
+    
+    if (!bios.trim()) {
+      errors.bios = "Bio cannot be empty";
+      isValid = false;
+    } else if (bios.length > 500) {
+      errors.bios = "Bio cannot exceed 500 characters";
+      isValid = false;
+    }
+    
+    setBiosErrors(errors);
+    return isValid;
+  };
+
+  return {
+    bios,
+    setBios,
+    biosErrors,
+    setBiosErrors,
+    validateBios,
+  };
+};
+
+// Add the validateBios helper function if it doesn't exist elsewhere
+export const validateBios = (bios) => {
+  let biosErrors = {};
+  let isValid = true;
+  
+  if (!bios.trim()) {
+    biosErrors.bios = "Bio cannot be empty";
+    isValid = false;
+  } else if (bios.length > 500) {
+    biosErrors.bios = "Bio cannot exceed 500 characters";
+    isValid = false;
+  }
+  
+  return { biosErrors, isValid };
 };
 

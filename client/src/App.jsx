@@ -3,7 +3,8 @@ import NoAuthNavNoOutline from "./Components/NoAuthNavNoOutline";
 import NoAuthSideBar from "./Components/NoAuthSideBar";
 import MainAppSideBar from "./Components/MainAppSideBar";
 import Button from "./Components/Button";
-
+import TaskCard from "./Components/TaskCard";
+import { useState } from "react";
 // Import the sidebar utility
 import { useSidebar } from "./tools/sidebarUtils";
 import { useNavigation } from "./tools/navigationUtils"
@@ -12,6 +13,8 @@ function App() {
   // Use the sidebar utility instead of managing state directly
   const { isOpen, openSidebar, closeSidebar } = useSidebar();
   const { goToCreateTask  } =  useNavigation()
+  const [Tasks, setTasks] = useState([]);
+
   
 
   return (
@@ -99,32 +102,7 @@ function App() {
 
         {/* Task Cards */}
         <section className="mt-6">
-          <div className="bg-[#1f2937] p-4 rounded-md mb-3">
-            <h2 className="text-white font-semibold">Update Portfolio Website</h2>
-            <p className="text-gray-400">Add recent projects and update skills section</p>
-            <p className="text-sm text-gray-400 mt-2">
-              <span className="bg-blue-600 text-white px-2 py-1 rounded">Low</span>
-              <span className="ml-2">📅 Friday, 12:00 PM</span>
-            </p>
-          </div>
-            
-          <div className="bg-[#1f2937] p-4 rounded-md mb-3">
-            <h2 className="text-white font-semibold">Schedule Dentist Appointment</h2>
-            <p className="text-gray-400">Next week</p>
-            <p className="text-sm text-gray-400 mt-2">
-              <span className="bg-yellow-600 text-white px-2 py-1 rounded">Medium</span>
-              <span className="ml-2">🏥 Personal • Health</span>
-            </p>
-          </div>
-
-          <div className="bg-[#1f2937] p-4 rounded-md mb-3">
-            <h2 className="text-white font-semibold">Prepare Presentation for Client</h2>
-            <p className="text-gray-400">Create slides and gather data</p>
-            <p className="text-sm text-gray-400 mt-2">
-              <span className="bg-red-600 text-white px-2 py-1 rounded">High</span>
-              <span className="ml-2">📅 Thursday, 2:00 PM</span>
-            </p>
-          </div>
+          
         </section>
       </div>
     </main>

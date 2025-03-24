@@ -4,18 +4,19 @@ const Task = require('../Models/Task'); // Import your Task model
 
 router.post('/CreateTask', async (req, res) => {
     try {
-        const { Title, Description, Priority, Type } = req.body;
+        const { Title, Description, Priority, Type,Due } = req.body;
         console.log(Title)
         console.log(Description)
         console.log(Priority)
         console.log(Type)
+        console.log(Due)
         
         // Check if required fields are provided
-        if (!Title || !Description || !Priority || !Type) {
+        if (!Title || !Description || !Priority || !Type || !Due) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
-        console.log(Title, Description, Priority, Type);
+        console.log(Title, Description, Priority, Type , Due);
 
         // Check if the task already exists
         const existingTask = await Task.findOne({ TaskTitle: Title });
@@ -31,6 +32,7 @@ router.post('/CreateTask', async (req, res) => {
             Task: Description,
             importance: Priority,
             type: Type,  // Ensure lowercase `type` to match schema
+            Due: Due,  
         });
 
         await newTask.save();

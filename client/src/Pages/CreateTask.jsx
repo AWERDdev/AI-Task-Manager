@@ -9,7 +9,7 @@ import { useNavigation } from "../Tools/navigationUtils"
 
 function Task() {
     const {isOpen,openSidebar,closeSidebar} = useSidebar();
-    const { Title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask } = useTaskFormValidation()
+    const { Title,setTitle,Description,setDescription,errors,setErrors,validateForm,setPriority,setType,Priority,Type,setTask,Due,setDue } = useTaskFormValidation()
     const { goToDashboard } = useNavigation()
 
     const handleSubmit = async (e) => {
@@ -20,7 +20,7 @@ function Task() {
   
         try {
           console.log("Seening results")
-          const result = await sendTaskData(Title, Description, Priority, Type);
+          const result = await sendTaskData(Title, Description, Priority, Type,Due);
           console.log("results recived")
           // console.log(Title)
           // console.log(Description)
@@ -75,8 +75,8 @@ function Task() {
           <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100">
             <div className="bg-[#111827] p-10 rounded-lg shadow-lg mt-10 w-[30%] min-w-[400px]">
               {/* Title Section */}
-              <div className="text-center mb-10">
-                <h2 className="text-white text-2xl">Create a Task</h2>
+              <div className="text-center">
+                <h2 className="text-white text-2xl">Create Task</h2>
               </div>
   
               {/* Task Form */}
@@ -105,7 +105,7 @@ function Task() {
                   <textarea
                     id="TaskDescription"
                     placeholder="Enter task description"
-                    className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500 resize-none"
                     value={Description}
                     onChange={(e)=> {
                       setDescription(e.target.value)
@@ -114,7 +114,7 @@ function Task() {
                     }
                     
                   />
-                    <label htmlFor="TaskName"className="text-red-500">{errors.description}</label>
+                    <label htmlFor="TaskDescription"className="text-red-500">{errors.description}</label>
                 </div>
   
                 {/* Task Priority */}
@@ -135,7 +135,7 @@ function Task() {
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                   </select>
-                  <label htmlFor="TaskName" className="text-red-500">{errors.Priority}</label>
+                  <label htmlFor="TaskPriority" className="text-red-500">{errors.Priority}</label>
                 </div>
   
                 {/* Task Type */}
@@ -153,9 +153,26 @@ function Task() {
                     }}
                     
                   />
-                  <label htmlFor="TaskName" className="text-red-500">{errors.Type}</label>
-                </div>
-  
+                  <label htmlFor="TaskType" className="text-red-500">{errors.Type}</label>
+                  </div>
+                  <div>
+                  <label htmlFor="TaskDue" className="text-white text-[1rem]">Task Due</label>
+
+                  <input
+                    type="text"
+                    id="TaskDue"
+                    placeholder="e.g., Due"
+                    className="w-full px-3 py-2 bg-[#1f2937] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
+                    value={Due}
+                    onChange={(e) => {
+                      setDue(e.target.value);
+                      setTask((prev) => ({ ...prev, type: e.target.value }));
+                    }}
+                    
+                  />
+                  <label htmlFor="TaskDue" className="text-red-500">{errors.Due}</label>
+          
+                  </div>
                 {/* Submit Button */}
                 <div className="mt-6">
                   <button onClick={handleSubmit} type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">

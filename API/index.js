@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./DB'); // Import DB connection file
+const connectDB = require('./DB');
 
 // Connect to MongoDB before starting the server
 connectDB();
@@ -27,7 +27,7 @@ app.use('/api', require('./Routes/LoginRoute'));
 app.use('/api', require('./Routes/SignupRoute'));
 app.use('/api', require('./Routes/CreateTaskRoute'));
 app.use('/api', require('./Routes/UserRoute'));
-
+app.use('/api', require('./Routes/UpdateRoute'));
 
 // Start Server with Error Handling
 app.listen(port, () => {

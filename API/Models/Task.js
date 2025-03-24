@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const TaskSchema = new mongoose.Schema({
-  TaskTitle: { type: String, required: true },
+  TaskTitle: { type: String,unique: true ,required: true },
   Task: { type: String, required: true },
-  importance: { type: String, unique: true, required: true },
+  importance: { type: String,required: true },
   type: { type: String, required: true },
-
+  Due: { type: String, required: true },
 });
 
 // Prevent model overwrite error

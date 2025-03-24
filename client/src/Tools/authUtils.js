@@ -81,53 +81,95 @@ export const sendLoginData = async (email, password) => {
     
     return newErrors;
   };
-  /**
-   * Send new password to the server
-   * @param {string} password - The new password
-   * @returns {Promise<Object>} Result of the password update attempt
-   */
-  export const sendNewPassword = async (password) => {
-    try {
-      const response = await fetch('http://localhost:3500/api/update-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ password }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        console.log("Password updated successfully");
-        return { success: true };
-      } else {
-        return { success: false, message: data.message };
-      }
-    } catch (error) {
-      console.error(`Failed to update password: ${error}`);
-      return { success: false, message: "Network error" };
+/**
+ * Handles password-related errors
+ * @param {Object} result - API response result
+ * @returns {Object} Formatted errors
+ */
+export const handlePasswordErrors = (result) => {
+  let errors = {};
+
+  if (result.status === 400) {
+    errors.password = result.message || "Invalid password input.";
+  } else if (result.status === 401) {
+    errors.password = result.message || "Incorrect password.";
+  } else {
+    errors.password = "Something went wrong. Please try again later.";
+  }
+
+  return errors;
+};
+
+/**
+ * Sends new password update request
+ * @param {string} password - New password
+ * @returns {Promise<Object>} API response result
+ */
+export const sendNewPassword = async (password) => {
+  try {
+    const response = await fetch("http://localhost:3500/api/UpdatePassword", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+
+    const data = await response.json();
+    return response.ok ? { success: true } : { success: false, message: data.message, status: response.status };
+  } catch (error) {
+    console.error("Network Error:", error);
+    return { success: false, message: "Network error", status: 500 };
+  }
+};
+
+/**
+ * Handles bios-related errors
+ * @param {Object} result - API response result
+ * @returns {Object} Formatted errors
+ */
+export const handleBiosErrors = (result) => {
+  let errors = {};
+  if (result.status === 400) {
+    errors.bios = result.message || "Invalid bios input.";
+  } else {
+    errors.bios = "Something went wrong. Please try again later.";
+  }
+  return errors;
+};
+
+/**
+ * Sends bios update request
+ * @param {string} bios - User bio
+ * @returns {Promise<Object>} API response result
+ */
+export const sendBios = async (bios) => {
+  try {
+    // Get user email from localStorage
+    const userInfo = JSON.parse(localStorage.getItem('user'));
+    const email = userInfo?.email;
+    
+    if (!email) {
+      return { success: false, message: "User not authenticated", status: 401 };
     }
-  };
 
-    /**
-   * Handle login error responses
-   * @param {Object} result - API response result
-   * @returns {Object} Formatted errors
-   */
-    export const handlePasswordErrors = (result) => {
-      let newErrors = {};
-      
-      if (result.status === 400) {
-        newErrors.email = result.message || "Invalid input. Please check your details.";
-        newErrors.password = "";
-      } else if (result.status === 401) {
-        newErrors.password = result.message || "Incorrect password.";
-      } else {
-        newErrors.password = "Something went wrong. Please try again later.";
-      }
-      
-      return newErrors;
-    };
+    console.log("Sending bios update request:", { email, bios });
 
+    const response = await fetch("http://localhost:3500/api/UpdateUserBios", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, bios }),
+    });
+
+    if (!response.ok) {
+      console.error("Server response not OK:", response.status, response.statusText);
+    }
+
+    const data = await response.json();
+    return response.ok 
+      ? { success: true, data } 
+      : { success: false, message: data.message || "Failed to update bio", status: response.status };
+  } catch (error) {
+    console.error("Network Error in sendBios:", error);
+    return { success: false, message: "Network error", status: 500 };
+  }
+};
