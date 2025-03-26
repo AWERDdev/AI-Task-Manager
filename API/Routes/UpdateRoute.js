@@ -7,6 +7,7 @@ const Task = require('../Models/Task');
 // Route to update User Password
 router.post('/UpdatePassword', async (req, res) => {
     try {
+        console.log("route Called")
         const { password, email } = req.body;
         console.log(password);
         console.log(email);
@@ -29,8 +30,9 @@ router.post('/UpdatePassword', async (req, res) => {
 
         // Update the user password
         user.password = hashedPassword;
+        await user.save();
 
-        return res.status(200).json({ message: "Password updated successfully" });
+        return res.status(200).json({ message: "Password updated successfully",Newpassword:hashedPassword });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server error" });
@@ -54,7 +56,7 @@ router.post('/UpdateUserBios', async (req, res) => {
         }
         console.log("storing bios")
         // Update the user bios
-        user.bio = bios; // Changed from Bios to bio to match the field name in Profile.jsx
+        user.Bios = bios; // Changed from Bios to bio to match the field name in Profile.jsx
         await user.save(); // Add this line to save the changes
 
         return res.status(200).json({ message: "Bios updated successfully",bios:bios });

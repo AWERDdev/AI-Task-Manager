@@ -31,6 +31,7 @@ export const useUser = () => {
 
       if (response.ok) {
         setUser(data.user);
+        console.log("Fetched user data:", data.user);
       } else {
         setError(data.message || "Failed to fetch user data");
         console.error("Error fetching user:", data.message);

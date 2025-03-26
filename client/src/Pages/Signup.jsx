@@ -42,7 +42,6 @@ function Signup() {
       console.log('Valid data, sending to backend...');
   
       const result = await sendSignupData(formData);
-      
       if (result.success) {
         console.log('Signup successful');
         goToDashboard();

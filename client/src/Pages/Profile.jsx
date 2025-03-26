@@ -2,20 +2,18 @@ import { FaBell, FaCog, FaSignOutAlt, FaUser, FaSignInAlt } from "react-icons/fa
 import { useNavigate } from "react-router";
 import { useUser } from "../tools/FetchUserData";
 import { usePasswordValidation,useBiosValidation } from "../tools/validationUtils";
-import {handlePasswordErrors,sendNewPassword,sendBios,handleBiosErrors} from "../tools/authUtils";
+import {handlePasswordErrors,sendNewPassword,sendBios} from "../tools/authUtils";
 // import { useState } from "react";
 function Profile() {
   const { user, loading, logoutUser } = useUser();
   const {
     password,
     setPassword,
-    confirmPassword,
-    setConfirmPassword,
     errors,
     setErrors,
     validatePassword,
   } = usePasswordValidation();
-  
+
  // Bios validation state
  const { bios, setBios,  setBiosErrors, validateBios } = useBiosValidation();
   const navigate = useNavigate();
@@ -30,18 +28,21 @@ function Profile() {
   };
   const handleSubmitNewPassword = async (e) => {
     e.preventDefault();
-
+  
     if (validatePassword()) {
       console.log("Valid data, sending to backend...");
-
+  
       try {
         const result = await sendNewPassword(password);
-
+  
         if (result.success) {
           console.log("Password updated successfully");
+          setErrors({}); // Clear errors on success
         } else {
           console.error("Password update failed:", result.message);
-          setErrors(handlePasswordErrors(result));
+          const newErrors = handlePasswordErrors(result);
+          console.log("New Errors:", newErrors); // Debugging
+          setErrors(newErrors);
         }
       } catch (error) {
         console.error("Request failed:", error);
@@ -49,29 +50,34 @@ function Profile() {
       }
     }
   };
+  
+// Handle bios update submission
+const handleSubmitBios = async (e) => {
+  e.preventDefault();
+  console.log("Submit bios button clicked");
 
-  // Handle bios update submission
-  const handleSubmitBios = async (e) => {
-    e.preventDefault();
+  if (validateBios()) {
+    console.log("Valid bios, sending to backend...", bios);
 
-    if (validateBios()) {
-      console.log("Valid bios, sending to backend...");
-
-      try {
-        const result = await sendBios(bios);
-
-        if (result.success) {
-          console.log("Bios updated successfully");
-        } else {
-          console.error("Bios update failed:", result.message);
-          setBiosErrors(handleBiosErrors(result));
-        }
-      } catch (error) {
-        console.error("Request failed:", error);
-        setBiosErrors({ bios: "Something went wrong. Please try again later." });
+    try {
+      console.log("Before calling sendBios");
+      const result = await sendBios(bios);
+      console.log("After calling sendBios, result:", result);
+      if (result.success) {
+        console.log("Bios updated successfully");
+        // Optionally refresh user data or show success message
+      } else {
+        console.error("Bios update failed:", result.message);
+        setBiosErrors({ bios: result.message || "Failed to update bio" });
       }
+    } catch (error) {
+      console.error("Request failed in handleSubmitBios:", error);
+      setBiosErrors({ bios: "Something went wrong. Please try again later." });
     }
-  };
+  } else {
+    console.log("Bios validation failed");
+  }
+};
 
   return (
     <main className="relative bg-gradient-to-b from-gray-800 via-gray-600 to-gray-100 w-screen h-screen overflow-x-hidden text-gray-300 flex">
@@ -159,7 +165,8 @@ function Profile() {
                 <div className="bg-gray-700 p-2 rounded">{user?.username || "Guest"}</div>
                 <div className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2">{user?.email || "Guest@gmail.com"}</div>
                 <label htmlFor="BiosBar">Bios</label>
-                <textarea id="BiosBar" className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2 resize-none" rows="4" defaultValue={user?.bio || ""}value={bios}onChange={(e)=>setBios(e.target.value)}></textarea>
+                <div className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2 resize-none">{user?.Bios}</div>
+                <textarea id="BiosBar"className="bg-gray-700 p-2 rounded col-span-1 md:col-span-2 resize-none"rows="4"value={bios}  onChange={(e) => setBios(e.target.value)} placeholder="Enter your new bio  here..."></textarea>
                 {errors.bios && <p className="text-red-500 text-xs">{errors.bios}</p>}
                 <button onClick={handleSubmitBios} className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded col-span-1 md:col-span-2">
                   Save Bios
@@ -172,10 +179,6 @@ function Profile() {
               <div className="grid grid-cols-1  gap-4">
                 <input type="password" placeholder="New Password" className="bg-gray-700 p-2 w-full rounded col-span-1 md:col-span-2"value={password} onChange={(e)=>setPassword(e.target.value)} />
                 {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
-                
-                <input type="password" placeholder="Confirm New Password" className="bg-gray-700 p-2 w-full rounded col-span-1 md:col-span-2"value={confirmPassword}  onChange={(e)=>setConfirmPassword(e.target.value)}/>
-                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
-                
                 <button onClick={handleSubmitNewPassword} className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded col-span-1 md:col-span-2">
                   Update Password
                 </button>

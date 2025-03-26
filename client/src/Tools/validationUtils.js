@@ -187,23 +187,24 @@ export const useForm = (initialValues, validateFn) => {
     resetForm
   };
 };
- /**
+/**
  * Validates password input
  * @param {string} password - The password to validate
  * @param {string} confirmPassword - The confirmation password
  * @returns {Object} Object containing errors and isValid flag
  */
-export const validatePassword = (password, confirmPassword) => {
+export const validatePassword = (password) => {
   let errors = {};
 
-  if (!password) {
+  // Ensure password is a string to avoid type errors
+  if (typeof password !== "string") {
+    password = "";
+  }
+
+  if (!password.trim()) {
     errors.password = "Password is required";
   } else if (password.length < 8) {
     errors.password = "Password must be at least 8 characters long";
-  }
-
-  if (password !== confirmPassword) {
-    errors.confirmPassword = "Passwords do not match";
   }
 
   return {
@@ -213,25 +214,21 @@ export const validatePassword = (password, confirmPassword) => {
 };
 
 
-
-import { validatePassword as validatePasswordHelper } from "./validationUtils"; // Ensure this is the correct path
+import { validatePassword as validatePasswordHelper } from "./validationUtils";
 
 export const usePasswordValidation = () => {
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
 
   const validatePassword = () => {
-    const { errors, isValid } = validatePasswordHelper(password, confirmPassword); // Use the imported function
-    setErrors(errors);
+    const { errors, isValid } = validatePasswordHelper(password);
+    setErrors(errors); // Updates errors state
     return isValid;
   };
 
   return {
     password,
     setPassword,
-    confirmPassword,
-    setConfirmPassword,
     errors,
     setErrors,
     validatePassword,
