@@ -30,18 +30,6 @@ app.use('/api', require('./Routes/UserRoute'));
 app.use('/api', require('./Routes/UpdateRoute'));
 
 
-// app.post("/PYData",async(req,res)=>{
-//   const response = await fetch(`http://127.0.0.1:8000/message`,{
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({message:"hello this is main node JS server talking"}),
-//   })
-//   const data  = await response.json()
-//   console.log(data)
-// })
-
 
 // Start Server with Error Handling
 app.listen(port, () => {

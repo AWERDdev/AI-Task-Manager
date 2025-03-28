@@ -4,19 +4,34 @@ import NoAuthSideBar from "./Components/NoAuthSideBar";
 import MainAppSideBar from "./Components/MainAppSideBar";
 import Button from "./Components/Button";
 import TaskCard from "./Components/TaskCard";
-import { useState } from "react";
+import { useEffect } from "react";
 // Import the sidebar utility
 import { useSidebar } from "./tools/sidebarUtils";
 import { useNavigation } from "./tools/navigationUtils"
-
+import  { RequestTasks } from "./tools/TaskRequester";
 function App() {
   // Use the sidebar utility instead of managing state directly
   const { isOpen, openSidebar, closeSidebar } = useSidebar();
   const { goToCreateTask  } =  useNavigation()
-  const [Tasks, setTasks] = useState([]);
 
-  
+  const RequestUsersTasks = async () => {
+    try {
+      const response = await RequestTasks()
+      const data = await response.json();
+      console.log(data);
+      if (data.success) {
+        console.log('fetching Tasks succesful successful');
+      }else{
+        console.log('fetching Tasks  failed:', data.message);
+      }
+    }catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    }
 
+    useEffect(() => {
+      RequestUsersTasks();
+    }, []);
   return (
     <main className="relative bg-[#111827] w-screen h-screen overflow-x-hidden text-gray-300">
       {/* Navbar */}

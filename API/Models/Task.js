@@ -6,6 +6,7 @@ const TaskSchema = new mongoose.Schema({
   importance: { type: String,required: true },
   type: { type: String, required: true },
   Due: { type: String, required: true },
+  userId:{ type: String, required: true },
 });
 
 // Prevent model overwrite error

@@ -93,10 +93,13 @@ export const sendTaskData = async (Title, Description, Priority, Type,Due) => {
     // console.log(Description)
     // console.log(Priority)
     // console.log(Type)
+    const userData = JSON.parse(localStorage.getItem("user"));
+
+
     const response = await fetch('http://localhost:3500/api/CreateTask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Title, Description, Priority, Type,Due }),
+      body: JSON.stringify({ Title, Description, Priority, Type,Due,userData }),
     });
 
     const data = await response.json();
