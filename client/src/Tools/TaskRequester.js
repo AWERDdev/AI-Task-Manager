@@ -52,4 +52,46 @@ export const RequestUsersTasks = async () => {
         return [];
     }
 };
-
+export const DeleteTask = async (taskId) => {
+    try {
+      // Get the token from localStorage
+      const token = localStorage.getItem('token');
+      console.log("Token:", token);
+      
+      if (!token) {
+        return { success: false, message: "No authentication token found" };
+      }
+  
+      // Use the correct API base URL - adjust this to match your backend URL
+      const API_BASE_URL = 'http://127.0.0.1:8000/api'; // Change this to your actual backend URL
+      
+      // Make the API call to delete the task
+      console.log(`Sending DELETE request to: ${API_BASE_URL}/tasks with task ID: ${taskId}`);
+      
+      const response = await fetch(`${API_BASE_URL}/tasks`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          token: token,
+          task_id: taskId 
+        }),
+      });
+  
+      console.log("Response status:", response.status);
+      
+      if (!response.ok) {
+        return { 
+          success: false, 
+          message: `Server returned ${response.status}: ${response.statusText}` 
+        };
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error in DeleteTask:", error);
+      return { success: false, message: "An error occurred while deleting the task" };
+    }
+  };

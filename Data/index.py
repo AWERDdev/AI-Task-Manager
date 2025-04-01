@@ -2,8 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from mongoengine import connect
 from Routes.LinkedLists import router as linked_lists_router
-from Routes.HashTables import router as hash_tables_router
-from Routes.Arrays import router as arrays_router
 from mongoengine import Document, StringField
 
 # Connect to MongoDB using mongoengine
@@ -30,8 +28,6 @@ app.add_middleware(
 
 # Register routers correctly
 app.include_router(linked_lists_router, prefix="/api")
-app.include_router(hash_tables_router, prefix="/api")
-app.include_router(arrays_router, prefix="/api")
 
 @app.get("/")
 def home():

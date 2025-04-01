@@ -1,28 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import jwt
-from mongoengine import Document, StringField, IntField, connect
 from pymongo import MongoClient
-
+from bson.objectid import ObjectId
 # Secret key for JWT verification (must match the frontend's secret)
 JWT_SECRET = "your_secret_key"
 
 router = APIRouter()
 
-# Connect to MongoDB using mongoengine
-connect('TaskMaster', host='mongodb://127.0.0.1:27017/')
-
-# Define a MongoEngine model for the Task
-class Task(Document):
-    userId = StringField(required=True)
-    TaskTitle = StringField()
-    Task = StringField()
-    importance = StringField()
-    type = StringField()
-    Due = StringField()
-    # Add __v field to match Mongoose versioning
-    __v = IntField(required=False)
-    meta = {'collection': 'tasks'}
+# Connect to MongoDB using PyMongo
+client = MongoClient('mongodb://127.0.0.1:27017/')
+db = client['TaskMaster']
+tasks_collection = db['tasks']
 
 # Define a model for the request body
 class TokenRequest(BaseModel):
@@ -32,65 +21,135 @@ def verify_token(token: str):
     """Verify and decode JWT token."""
     try:
         decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        print(f"Decoded token: {decoded}")
         return decoded
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+class TaskNode:
+    def __init__(self, task_id, task_title, task_description, importance, task_type, due_date):
+        self.task_id = task_id
+        self.task_title = task_title
+        self.task_description = task_description
+        self.importance = importance
+        self.task_type = task_type
+        self.due_date = due_date
+        self.next = None  # Points to the next task node
+
+class TaskLinkedList:
+    def __init__(self):
+        self.head = None
+
+    def add_task(self, task_id, task_title, task_description, importance, task_type, due_date):
+        new_node = TaskNode(task_id, task_title, task_description, importance, task_type, due_date)
+        if not self.head:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = new_node
+    
+    def remove_task(self, task_id):
+        if not self.head:
+            return False
+        
+        if self.head.task_id == task_id:
+            self.head = self.head.next
+            return True
+        
+        current = self.head
+        while current.next and current.next.task_id != task_id:
+            current = current.next
+        
+        if current.next:
+            current.next = current.next.next
+            return True
+        
+        return False
+    
+    def get_all_tasks(self):
+        tasks = []
+        current = self.head
+        while current:
+            tasks.append({
+                "id": current.task_id,
+                "TaskTitle": current.task_title,
+                "Task": current.task_description,
+                "importance": current.importance,
+                "type": current.task_type,
+                "Due": current.due_date
+            })
+            current = current.next
+        return tasks
+
 @router.post("/users")
 async def get_users_tasks(user: TokenRequest):
     try:
-        # Verify the token sent from the client
         decoded_client_token = verify_token(user.token)
-        
-        # Extract user ID safely
-        userId_from_token = None
-        
-        # Check if decoded_client_token is a dictionary
-        if isinstance(decoded_client_token, dict):
-            userId_from_token = decoded_client_token.get('id') or decoded_client_token.get('_id')
-        else:
-            # If it's not a dictionary, it might be the ID itself or have a different structure
-            print(f"Decoded token is not a dictionary: {type(decoded_client_token)}")
-            userId_from_token = decoded_client_token
-                
-        if not userId_from_token:
+        user_id = decoded_client_token.get("id") or decoded_client_token.get("_id")
+
+        if not user_id:
             raise HTTPException(status_code=400, detail="Token does not contain user ID")
-        
-        print(f"Decoded userId from token: {userId_from_token}")
-        
-        # Use a more direct approach with PyMongo to avoid field validation issues
-        from pymongo import MongoClient
-        client = MongoClient('mongodb://127.0.0.1:27017/')
-        db = client['TaskMaster']
-        tasks_collection = db['tasks']
-        
-        # Query tasks directly using PyMongo
-        tasks_cursor = tasks_collection.find({"userId": str(userId_from_token)})
-        
-        # Convert cursor to list of dictionaries
-        task_list = []
+
+        task_linked_list = TaskLinkedList()
+        tasks_cursor = tasks_collection.find({"userId": str(user_id)})
+
         for task in tasks_cursor:
-            task_dict = {
-                "id": str(task.get("_id")),
-                "TaskTitle": task.get("TaskTitle"),
-                "Task": task.get("Task"),
-                "importance": task.get("importance"),
-                "type": task.get("type"),
-                "Due": task.get("Due")
-            }
-            task_list.append(task_dict)
-        
+            task_linked_list.add_task(
+                task_id=str(task.get("_id")),
+                task_title=task.get("TaskTitle", "Untitled"),
+                task_description=task.get("Task", "No description"),
+                importance=task.get("importance", "Low"),
+                task_type=task.get("type", "General"),
+                due_date=task.get("Due", "No due date")
+            )
+
+        task_list = task_linked_list.get_all_tasks()
+
         if not task_list:
             return {"success": False, "message": "No tasks found for this user"}
-        
+
         return {"success": True, "tasks": task_list, "message": "Tasks found successfully"}
-    
+
     except HTTPException as he:
-        # Re-raise HTTP exceptions
         raise he
     except Exception as e:
-        print(f"Error in get_users_tasks: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+class DeleteTaskRequest(BaseModel):
+    token: str
+    task_id: str
+
+@router.delete("/tasks")
+async def delete_task(request: DeleteTaskRequest):
+    try:
+        decoded_client_token = verify_token(request.token)
+        user_id = decoded_client_token.get("id") or decoded_client_token.get("_id")
+        
+        if not user_id:
+            raise HTTPException(status_code=400, detail="Token does not contain user ID")
+        
+        # Convert string ID to ObjectId
+        try:
+            task_object_id = ObjectId(request.task_id)
+        except:
+            return {"success": False, "message": "Invalid task ID format"}
+        
+        # Check if the task exists and belongs to the user
+        task = tasks_collection.find_one({"_id": task_object_id, "userId": str(user_id)})
+        if not task:
+            return {"success": False, "message": "Task not found or not authorized to delete this task"}
+        
+        # Delete the task
+        result = tasks_collection.delete_one({"_id": task_object_id, "userId": str(user_id)})
+        
+        if result.deleted_count == 1:
+            return {"success": True, "message": "Task deleted successfully"}
+        else:
+            return {"success": False, "message": "Failed to delete task"}
+    
+    except HTTPException as he:
+        raise he
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

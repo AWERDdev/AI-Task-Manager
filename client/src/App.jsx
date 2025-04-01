@@ -4,19 +4,50 @@ import NoAuthSideBar from "./Components/NoAuthSideBar";
 import MainAppSideBar from "./Components/MainAppSideBar";
 import Button from "./Components/Button";
 import TaskCard from "./Components/TaskCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // Import the sidebar utility
 import { useSidebar } from "./tools/sidebarUtils";
 import { useNavigation } from "./tools/navigationUtils"
-import  { RequestTasks } from "./tools/TaskRequester";
+import  { RequestTasks,DeleteTask } from "./tools/TaskRequester";
+
 function App() {
   // Use the sidebar utility instead of managing state directly
   const { isOpen, openSidebar, closeSidebar } = useSidebar();
   const { goToCreateTask  } =  useNavigation()
+  const [Tasks,setTasks] = useState([])
 
+
+  
+  const removeTask = async (taskId) => {
+    console.log("Removing task with ID:", taskId);
+    console.log("Task ID type:", typeof taskId);
+    
+    // First update the UI optimistically
+    const updatedTasks = Tasks.filter(task => task.id !== taskId);
+    setTasks(updatedTasks);
+    
+    // Then delete from the backend
+    try {
+      const result = await DeleteTask(taskId);
+      console.log("Delete result:", result);
+      
+      if (!result.success) {
+        console.error("Failed to delete task:", result.message);
+        // Revert the UI change if the backend delete fails
+        RequestUsersTasks();
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      // Revert the UI change
+      RequestUsersTasks();
+    }
+  };
+  
   const RequestUsersTasks = async () => {
     try {
       const result = await RequestTasks()
+      console.log(`this is result ${result}`)
+      setTasks(result.tasks)
       if (result.success) {
         console.log('fetching Tasks succesful successful');
       }else{
@@ -115,7 +146,23 @@ function App() {
 
         {/* Task Cards */}
         <section className="mt-6">
-          
+        {Tasks.length > 0 ? (
+  Tasks.map((task) => (
+    <TaskCard
+      key={task.id}
+      id={task.id}  // Add this line to pass the ID
+      title={task.TaskTitle}
+      description={task.Task}
+      priority={task.importance}
+      type={task.type}
+      dueDate={task.Due}
+      RemoveTaskBTN={removeTask}
+    />
+  ))
+) : (
+  <p className="text-gray-400 flex justify-center">No tasks found.</p>
+)}
+ 
         </section>
       </div>
     </main>
