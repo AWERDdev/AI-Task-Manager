@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   Bios: { type: String, required: false },
-  token: { type: String }
+  token: { type: String,required:true,unique: true, },
+  // userId: { type: String,required:true,unique: true, }
 });
 
 // Prevent model overwrite error

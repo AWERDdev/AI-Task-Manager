@@ -16,13 +16,11 @@ function App() {
 
   const RequestUsersTasks = async () => {
     try {
-      const response = await RequestTasks()
-      const data = await response.json();
-      console.log(data);
-      if (data.success) {
+      const result = await RequestTasks()
+      if (result.success) {
         console.log('fetching Tasks succesful successful');
       }else{
-        console.log('fetching Tasks  failed:', data.message);
+        console.log('fetching Tasks  failed:', result.message);
       }
     }catch (error) {
         console.error("Error fetching tasks:", error);
@@ -76,23 +74,23 @@ function App() {
               placeholder="🔍 Search tasks..."
               className="w-[80vw] lg:w-[40vw] px-3 py-2 bg-[#374151] text-gray-300 border-none rounded-md focus:ring-2 focus:ring-blue-500"
             />
-            <select className="cursor-pointer p-2 bg-[#374151] text-white border-none rounded-md">
-              <option value="" disabled selected>All Priorities</option>
+            <select defaultValue="" className="cursor-pointer p-2 bg-[#374151] text-white border-none rounded-md">
+              <option value="" disabled>All Priorities</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
-            <select className="p-2 cursor-pointer bg-[#374151] text-white border-none rounded-md">
-              <option value="" disabled selected>All Tags</option>
+            <select defaultValue="" className="p-2 cursor-pointer bg-[#374151] text-white border-none rounded-md">
+              <option value="" disabled>All Tags</option>
               <option value="Work">Work</option>
               <option value="Urgent">Urgent</option>
               <option value="Health">Health</option>
               <option value="Personal">Personal</option>
             </select>
-            <select className="p-2 cursor-pointer bg-[#374151] text-white border-none rounded-md">
-              <option value="" disabled selected>Due Date</option>
-              <option value="Priority">Priority</option>
-              <option value="Alphabetical">Alphabetical</option>
+            <select defaultValue="" className="p-2 cursor-pointer bg-[#374151] text-white border-none rounded-md">
+              <option value="" disabled >Due Date</option>
+              <option value="Now">Now</option>
+              <option value="In_a_week">In A week</option>
             </select>
           </div>
         </section>

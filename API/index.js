@@ -20,7 +20,7 @@ app.use(cors({
 
 // API Routes
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Node API 👍👍' });
+  res.status(200).json({ message: 'Welcome to Node API 👍👍',job:"The main API for the Task Master app and gateway"});
 });
 
 app.use('/api', require('./Routes/LoginRoute'));

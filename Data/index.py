@@ -1,42 +1,38 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from pymongo import MongoClient
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from mongoengine import connect
+from Routes.LinkedLists import router as linked_lists_router
+from Routes.HashTables import router as hash_tables_router
+from Routes.Arrays import router as arrays_router
+from mongoengine import Document, StringField
 
+# Connect to MongoDB using mongoengine
+connect('TaskMaster', host='mongodb://127.0.0.1:27017/')
+
+# Define a MongoEngine model for the Task (ensure consistency with your schema)
+class Task(Document):
+    userId = StringField(required=True)  # userId field (make sure it's the same in MongoDB)
+    taskName = StringField()
+    description = StringField()
+    meta = {'collection': 'tasks'}  # Ensure it uses the 'tasks' collection
+
+# Initialize FastAPI app
 app = FastAPI()
 
-# Enable CORS (Cross-Origin Resource Sharing)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins (you can specify ["http://localhost:3000"] instead)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Connect to MongoDB
-client = MongoClient("mongodb://127.0.0.1:27017/")
-db = client["TaskMaster"]  
-User_tasks = db["Task"]  
-
-# Define a model for the request body
-class UserRequest(BaseModel):
-    # email: str
-    userData:object
+# Register routers correctly
+app.include_router(linked_lists_router, prefix="/api")
+app.include_router(hash_tables_router, prefix="/api")
+app.include_router(arrays_router, prefix="/api")
 
 @app.get("/")
 def home():
     return {"message": "Hello, FastAPI!"}
-
-@app.post("/users")
-async def get_users_tasks(user: UserRequest):
-    try:
-        # Find tasks for the given user ID
-        tasks = list(User_tasks.find({"userData": user.userData}))  # Exclude _id field
-        print(tasks)
-        if not tasks:
-            return {"success": False, "message": "No tasks found for this user"}
-        
-        return {"success": True, "tasks": tasks}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
