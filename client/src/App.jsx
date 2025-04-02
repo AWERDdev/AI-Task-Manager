@@ -16,47 +16,50 @@ function App() {
   const { goToCreateTask  } =  useNavigation()
   const [Tasks,setTasks] = useState([])
 
-
   
   const removeTask = async (taskId) => {
-    console.log("Removing task with ID:", taskId);
-    console.log("Task ID type:", typeof taskId);
+  console.log("Removing task with ID:", taskId);
+  console.log("Task ID type:", typeof taskId);
+  
+  // First update the UI optimistically
+  const updatedTasks = Tasks.filter(task => task.id !== taskId);
+  setTasks(updatedTasks);
+  
+  // Then delete from the backend
+  try {
+    const result = await DeleteTask(taskId);
+    console.log("Delete result:", result);
     
-    // First update the UI optimistically
-    const updatedTasks = Tasks.filter(task => task.id !== taskId);
-    setTasks(updatedTasks);
-    
-    // Then delete from the backend
-    try {
-      const result = await DeleteTask(taskId);
-      console.log("Delete result:", result);
-      
-      if (!result.success) {
-        console.error("Failed to delete task:", result.message);
-        // Revert the UI change if the backend delete fails
-        RequestUsersTasks();
-      }
-    } catch (error) {
-      console.error("Error deleting task:", error);
-      // Revert the UI change
+    if (!result.success) {
+      console.error("Failed to delete task:", result.message);
+      // Revert the UI change if the backend delete fails
       RequestUsersTasks();
     }
-  };
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    // Revert the UI change
+    RequestUsersTasks();
+  }
+};
   
-  const RequestUsersTasks = async () => {
-    try {
-      const result = await RequestTasks()
-      console.log(`this is result ${result}`)
-      setTasks(result.tasks)
-      if (result.success) {
-        console.log('fetching Tasks succesful successful');
-      }else{
-        console.log('fetching Tasks  failed:', result.message);
-      }
-    }catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
+const RequestUsersTasks = async () => {
+  try {
+    const result = await RequestTasks();
+    console.log(`this is result ${result}`);
+
+    // Ensure that result.tasks is always an array
+    setTasks(Array.isArray(result.tasks) ? result.tasks : []);
+
+    if (result.success) {
+      console.log('Fetching tasks successful');
+    } else {
+      console.log('Fetching tasks failed:', result.message);
     }
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    setTasks([]); // Ensure tasks is always an array, even on error
+  }
+};
 
     useEffect(() => {
       RequestUsersTasks();

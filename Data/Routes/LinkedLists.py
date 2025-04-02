@@ -126,30 +126,30 @@ async def delete_task(request: DeleteTaskRequest):
     try:
         decoded_client_token = verify_token(request.token)
         user_id = decoded_client_token.get("id") or decoded_client_token.get("_id")
-        
+
         if not user_id:
             raise HTTPException(status_code=400, detail="Token does not contain user ID")
-        
-        # Convert string ID to ObjectId
+
+        # Ensure task_id is a valid ObjectId
         try:
             task_object_id = ObjectId(request.task_id)
         except:
-            return {"success": False, "message": "Invalid task ID format"}
-        
-        # Check if the task exists and belongs to the user
+            raise HTTPException(status_code=400, detail="Invalid task ID format")
+
+        # Find the task first
         task = tasks_collection.find_one({"_id": task_object_id, "userId": str(user_id)})
         if not task:
-            return {"success": False, "message": "Task not found or not authorized to delete this task"}
-        
-        # Delete the task
-        result = tasks_collection.delete_one({"_id": task_object_id, "userId": str(user_id)})
-        
+            raise HTTPException(status_code=404, detail="Task not found or not authorized to delete")
+
+        # Delete the task from the database
+        result = tasks_collection.delete_one({"_id": task_object_id})
+
         if result.deleted_count == 1:
             return {"success": True, "message": "Task deleted successfully"}
         else:
-            return {"success": False, "message": "Failed to delete task"}
-    
+            raise HTTPException(status_code=500, detail="Failed to delete task")
+
     except HTTPException as he:
-        raise he
+        raise he  # Re-raise FastAPI HTTP exceptions
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
